@@ -66,4 +66,7 @@ for _, group in pairs(data.raw["item-group"]) do
 	})
 end
 
+-- update the player prototype to allow the unstacking category by hand
+table.insert(data.raw["player"]["player"].crafting_categories, "unstacking")
+
 return DBL

@@ -16,25 +16,31 @@ data:extend({
 	},
 	{
 		type = "bool-setting",
-		name = "deadlock-stacking-hide-unstacking",
+		name = "deadlock-stacking-auto-unstack",
 		order = "c",
 		setting_type = "startup",
-		default_value = false
+		default_value = false,
 	},
-
+	{
+		type = "bool-setting",
+		name = "deadlock-stacking-hide-unstacking",
+		order = "d",
+		setting_type = "startup",
+		default_value = false,
+	},
 	-- runtime
 	{
 		type = "bool-setting",
 		name = "deadlock-loaders-snap-to-inventories",
 		order = "a",
 		setting_type = "runtime-per-user",
-		default_value = true
+		default_value = true,
 	},
 	{
 		type = "bool-setting",
 		name = "deadlock-loaders-snap-to-belts",
 		order = "b",
 		setting_type = "runtime-per-user",
-		default_value = true
+		default_value = true,
 	},
 })

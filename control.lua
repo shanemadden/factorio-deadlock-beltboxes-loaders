@@ -1,3 +1,5 @@
+local STACK_SIZE = 5
+
 -- work with directions
 local opposite = {
 	[defines.direction.north] = defines.direction.south,
@@ -35,7 +37,7 @@ local function are_loadable(entities)
 	return false
 end
 
--- shanemadden's additional belt-facing detection
+-- belt facing detection
 local function are_belt_facing(entities, direction)
 	for _,entity in pairs(entities) do
 		if (entity.type == "transport-belt" or
@@ -64,28 +66,69 @@ local function on_built_entity(event)
 	if not snap2inv and not snap2belt then
 		return
 	end
-	-- check neighbours and snap if necessary
+	-- get the entities from both ends
 	local belt_end = get_neighbour_entities(built, built.direction)
 	local loading_end = get_neighbour_entities(built, opposite[built.direction])
-	-- belt-end detection by shanemadden
+	
 	if snap2belt and are_belt_facing(belt_end, opposite[built.direction]) then
+		-- there's a belt facing toward the belt-side of the loader, so we want to be in input mode
 		built.rotate( {by_player = event.player_index} )
 	elseif snap2belt and are_belt_facing(belt_end, built.direction) then
+		-- there's a belt facing away from the belt-side of the loader, so we want to be certain to stay in output mode, stop further checks
 		return
-	-- no belts detected, check for adjacent inventories
-	elseif snap2inv and not are_loadable(belt_end) and are_loadable(loading_end) then
+	elseif snap2inv and are_loadable(loading_end) then
+		-- there's a loadable entity on the loader end, flip into input mode to load it up
 		built.rotate( {by_player = event.player_index} )
-	elseif snap2inv and are_loadable(belt_end) and not are_loadable(loading_end) then
+	elseif are_loadable(belt_end) then
+		-- there's a loadable entity on the belt end but not on the loader end, flip around and go into input mode to load it up
 		built.direction = opposite[built.direction]
-		if not snap2belt or not are_belt_facing(loading_end, built.direction) then
+		-- unless there's a belt facing away, then stay in output mode
+		if not are_belt_facing(loading_end, built.direction) then
+			-- that wasn't the case so we're safe to go into input mode
 			built.rotate( {by_player = event.player_index} )
 		end
-	-- no inventories, check for inventory-end belts
 	elseif snap2belt and are_belt_facing(loading_end, built.direction) then
+		-- there's a belt facing into the loader end, switch into input mode and flip
 		built.direction = opposite[built.direction]
 		built.rotate( {by_player = event.player_index} )
 	elseif snap2belt and are_belt_facing(loading_end, opposite[built.direction]) then
+		-- there's a belt facing away from the loader end, flip
 		built.direction = opposite[built.direction]
 	end
 end
 script.on_event(defines.events.on_built_entity, on_built_entity)
+
+-- auto-unstacking by ownlyme
+local function on_picked_up_item(event)
+	if string.sub(event.item_stack.name, 1, 15) == "deadlock-stack-" then
+		-- attempt to auto-unstack
+		local player = game.players[event.player_index]
+		-- remove a stack
+		player.remove_item({
+			name = event.item_stack.name,
+			count = 1,
+		})
+		-- try to add a stack worth of the source item to the inventory
+		local inserted = player.insert({
+			name = string.sub(event.item_stack.name, 16),
+			count = STACK_SIZE,
+		})
+		if inserted == 0 then
+			-- the item couldn't insert for whatever reason, put the stacked version back
+			player.insert({
+				name = event.item_stack.name,
+				count = 1,
+			})
+		end
+	end
+end
+
+-- conditionally register based on the state of the setting so it's not costing any performance when disabled
+local function on_configuration_changed(event)
+	if settings.startup["deadlock-stacking-auto-unstack"].value then
+		script.on_event(defines.events.on_picked_up_item, on_picked_up_item)
+	else
+		script.on_event(defines.events.on_picked_up_item, nil)
+	end
+end
+script.on_configuration_changed(on_configuration_changed)
