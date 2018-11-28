@@ -22,6 +22,12 @@ DBL.CRAFT_TIME = 3 * DBL.STACK_SIZE / 80
 DBL.ITEM_ORDER = 1
 DBL.RECIPE_ORDER = 1
 
+if settings.startup["deadlock-stacking-batch-stacking"].value then
+	DBL.RECIPE_MULTIPLIER = 4
+else
+	DBL.RECIPE_MULTIPLIER = 1
+end
+
 DBL.BELT_COMPONENTS = {
 	"animations",
 	"belt_horizontal",

@@ -124,11 +124,12 @@ local function on_picked_up_item(event)
 end
 
 -- conditionally register based on the state of the setting so it's not costing any performance when disabled
-local function on_configuration_changed(event)
+local function on_load(event)
 	if settings.startup["deadlock-stacking-auto-unstack"].value then
 		script.on_event(defines.events.on_picked_up_item, on_picked_up_item)
 	else
 		script.on_event(defines.events.on_picked_up_item, nil)
 	end
 end
-script.on_configuration_changed(on_configuration_changed)
+script.on_load(on_load)
+script.on_init(on_load)
