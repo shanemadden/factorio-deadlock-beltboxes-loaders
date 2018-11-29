@@ -19,14 +19,14 @@ data:extend({
 		name = "deadlock-stacking-auto-unstack",
 		order = "c",
 		setting_type = "startup",
-		default_value = true,
+		default_value = false,
 	},
 	{
 		type = "bool-setting",
 		name = "deadlock-stacking-hide-unstacking",
 		order = "d",
 		setting_type = "startup",
-		default_value = true,
+		default_value = false,
 	},
 	{
 		type = "bool-setting",
