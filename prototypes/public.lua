@@ -120,17 +120,45 @@ function deadlock.add_tier(tier_table)
 		DBL.create_beltbox(tier_table)
 	end
 end
-function deadlock.add_stack(item_name, graphic_path, target_tech, icon_size)
+
+local allowed_item_types = {
+	["item"] = true,
+	["ammo"] = true,
+	["gun"] = true,
+	["tool"] = true,
+	["repair-tool"] = true,
+	["module"] = true,
+	["item-with-label"] = true,
+	["item-with-tags"] = true,
+	["capsule"] = true,
+}
+function deadlock.add_stack(item_name, graphic_path, target_tech, icon_size, item_type)
 	-- item_name    -- required, item to stack
 	-- graphic_path -- recommended, path to icon to use for dynamic icon generation
 	-- target_tech  -- optional, the tech to unlock this stacking recipe with, often deadlock-stacking-[1-3] (if not provided, you must unlock in a tech in your own mod)
 	-- icon_size    -- optional, defaults to 32
+	-- item_type    -- optional, defaults to "item"
 
 	---- validation ----
 	DBL.debug("Beginning data validation for new stacked item")
-	if not data.raw.item[item_name] then
+	if not item_type then
+		item_type = "item"
+	end
+	if not allowed_item_types[item_type] then
+		DBL.log_error(string.format("Item type not allowed for %s", item_name))
+		return
+	end
+	if not data.raw[item_type][item_name] then
 		DBL.log_error(string.format("Can't create stacks for item that doesn't exist %s", item_name))
 		return
+	end
+	if data.raw[item_type][item_name].stack_size < (DBL.STACK_SIZE * 4) then
+		DBL.log_warning(string.format("Source item stack size is too small for batched recipes: %s", item_name))
+		if data.raw[item_type][item_name].stack_size < DBL.STACK_SIZE then
+			-- https://forums.factorio.com/viewtopic.php?f=7&t=63850
+			DBL.log_error(string.format("..and %s also stacks too small for use in furnaces at all, you'll need to increase its stack size!", item_name))
+			return
+		end
 	end
 	if icon_size and (icon_size ~= 32 and icon_size ~= 64 and icon_size ~= 128) then
 		DBL.log_error(string.format("Invalid icon_size for %s", item_name))
@@ -141,8 +169,8 @@ function deadlock.add_stack(item_name, graphic_path, target_tech, icon_size)
 	end
 	DBL.debug(string.format("Data validation completed for stacked item %s", item_name))
 	if settings.startup["deadlock-enable-beltboxes"].value then
-		DBL.create_stacked_item(item_name, graphic_path, icon_size)
-		DBL.create_stacking_recipes(item_name, icon_size)
+		DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size)
+		DBL.create_stacking_recipes(item_name, item_type, icon_size)
 		if target_tech then
 			DBL.add_stacks_to_tech(item_name, target_tech)
 		end
