@@ -1,5 +1,5 @@
 -- tech level 1 stacked items
-deadlock.add_stack("raw-wood", string.format("__deadlock-beltboxes-loaders__/graphics/stacked-%s.png", "raw-wood"), "deadlock-stacking-1", 32)
+deadlock.add_stack("wood", string.format("__deadlock-beltboxes-loaders__/graphics/stacked-%s.png", "wood"), "deadlock-stacking-1", 32)
 deadlock.add_stack("iron-ore", string.format("__deadlock-beltboxes-loaders__/graphics/stacked-%s.png", "iron-ore"), "deadlock-stacking-1", 32)
 deadlock.add_stack("copper-ore", string.format("__deadlock-beltboxes-loaders__/graphics/stacked-%s.png", "copper-ore"), "deadlock-stacking-1", 32)
 deadlock.add_stack("stone", string.format("__deadlock-beltboxes-loaders__/graphics/stacked-%s.png", "stone"), "deadlock-stacking-1", 32)
