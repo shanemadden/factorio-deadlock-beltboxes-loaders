@@ -19,7 +19,7 @@ data:extend({
 		name = "deadlock-stacking-auto-unstack",
 		order = "c",
 		setting_type = "startup",
-		default_value = false,
+		default_value = true,
 	},
 	{
 		type = "bool-setting",
@@ -38,16 +38,16 @@ data:extend({
 	-- runtime
 	{
 		type = "bool-setting",
-		name = "deadlock-loaders-snap-to-inventories",
+		name = "deadlock-loaders-snap-to-belts",
 		order = "a",
 		setting_type = "runtime-per-user",
 		default_value = true,
 	},
 	{
 		type = "bool-setting",
-		name = "deadlock-loaders-snap-to-belts",
+		name = "deadlock-loaders-snap-to-inventories",
 		order = "b",
 		setting_type = "runtime-per-user",
-		default_value = true,
+		default_value = false,
 	},
 })

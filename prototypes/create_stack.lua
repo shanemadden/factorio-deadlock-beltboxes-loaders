@@ -56,7 +56,7 @@ function DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size)
 			icons = stacked_icons,
 			icon_size = icon_size,
 			stack_size = math.floor(data.raw[item_type][item_name].stack_size/DBL.STACK_SIZE),
-			flags = { "goes-to-main-inventory" },
+			flags = {},
 			subgroup = string.format("stacks-%s", get_group(item_name, item_type)),
 			order = menu_order,
 			allow_decomposition = false,
@@ -88,6 +88,8 @@ function DBL.create_stacking_recipes(item_name, item_type, icon_size)
 			icon_size = icon_size,
 		}
 	)
+	-- TODO use a smaller multiplier if the item won't fit at current multiplier
+
 	-- stacking
 	if data.raw.recipe[string.format("deadlock-stacks-stack-%s", item_name)] then
 		DBL.log_warning(string.format("Attempt to create stacking recipe that already exists for %s, skipping", item_name))

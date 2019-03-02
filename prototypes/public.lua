@@ -136,7 +136,7 @@ function deadlock.add_stack(item_name, graphic_path, target_tech, icon_size, ite
 	-- item_name    -- required, item to stack
 	-- graphic_path -- recommended, path to icon to use for dynamic icon generation
 	-- target_tech  -- optional, the tech to unlock this stacking recipe with, often deadlock-stacking-[1-3] (if not provided, you must unlock in a tech in your own mod)
-	-- icon_size    -- optional, defaults to 32
+	-- icon_size    -- optional, defaults to 64
 	-- item_type    -- optional, defaults to "item"
 
 	---- validation ----
@@ -165,7 +165,7 @@ function deadlock.add_stack(item_name, graphic_path, target_tech, icon_size, ite
 		return
 	end
 	if not icon_size then
-		icon_size = 32
+		icon_size = 64
 	end
 	DBL.debug(string.format("Data validation completed for stacked item %s", item_name))
 	if settings.startup["deadlock-enable-beltboxes"].value then
@@ -221,7 +221,7 @@ function deadlock_stacking.reset()
 			end
 		end
 	end
-    DBL.debug("Technologies cleared.")
+	DBL.debug("Technologies cleared.")
 end
 
 function deadlock_stacking.remove(target_tech)

@@ -1,0 +1,6 @@
+---------------------------------------------------------------------------------------------------
+Version: 2.0.0
+Date: 02. 03. 2019
+  Changes:
+    - Initial release - combines functionality of DeadlockLoaders and DeadlockStacking (if you don't want one or the other, disable them in options)
+    - If you have an existing save, you also need the updated versions of the old mods for the first load - please see the mod portal for instructions if you have issues
