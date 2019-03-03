@@ -27,7 +27,17 @@ if settings.startup["deadlock-stacking-batch-stacking"].value then
 else
 	DBL.RECIPE_MULTIPLIER = 1
 end
-
+DBL.BELT_COMPONENTS = {
+	"animations",
+	"belt_horizontal",
+	"belt_vertical",
+	"ending_top",
+	"ending_bottom",
+	"ending_side",
+	"starting_top",
+	"starting_bottom",
+	"starting_side",
+}
 DBL.BELTBOX_TECHS = {}
 
 if not data.raw["item-subgroup"]["beltboxes"] then

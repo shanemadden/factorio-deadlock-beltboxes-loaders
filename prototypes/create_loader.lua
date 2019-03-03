@@ -1,5 +1,33 @@
 local DBL = require("prototypes.shared")
 
+local function create_loader_belt_component(source)
+	local component = {
+		filename    = source.filename,
+		width       = source.width,
+		height      = source.height,
+		line_length = source.line_length,
+		frame_count = source.frame_count,
+		y           = source.y,
+		scale       = source.scale,
+		priority    = "extra-high",
+		flags       = { "no-crop", "low-object" },
+	}
+	if source.hr_version then
+		component.hr_version = {
+			filename    = source.hr_version.filename,
+			width       = source.hr_version.width,
+			height      = source.hr_version.height,
+			line_length = source.hr_version.line_length,
+			frame_count = source.hr_version.frame_count,
+			y           = source.hr_version.y,
+			scale       = source.hr_version.scale,
+			priority    = "extra-high",
+			flags       = { "no-crop", "low-object" },
+		}
+	end
+	return component
+end
+
 local function create_loader_entity(tier_table)
 	local entity = table.deepcopy(data.raw["loader"]["loader"])
 	entity.name = tier_table.loader
@@ -101,7 +129,17 @@ local function create_loader_entity(tier_table)
 		}
 	}
 	-- copy belt textures from the belt, not the loader
-	entity.belt_animation_set = data.raw["transport-belt"][tier_table.transport_belt].belt_animation_set
+	if data.raw["transport-belt"][tier_table.transport_belt].belt_animation_set then
+		-- new style animation set
+		entity.belt_animation_set = data.raw["transport-belt"][tier_table.transport_belt].belt_animation_set
+	else
+		-- old style, copy components
+		for _, bc in ipairs(DBL.BELT_COMPONENTS) do
+			if entity[bc] and data.raw["transport-belt"][tier_table.transport_belt][bc] then
+				entity[bc] = create_loader_belt_component(data.raw["transport-belt"][tier_table.transport_belt][bc])
+			end
+		end
+	end
 	entity.structure_render_layer = "transport-belt-circuit-connector"
 	return entity
 end

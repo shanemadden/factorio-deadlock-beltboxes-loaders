@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.0.3
+Date: 03. 03. 2019
+  Bugfixes:
+    - Allow for belts with old-style belt end animations in addition to the new belt_animation_set, fixing compatibility with FactorioExtended-Plus
+---------------------------------------------------------------------------------------------------
 Version: 2.0.2
 Date: 02. 03. 2019
   Bugfixes:
