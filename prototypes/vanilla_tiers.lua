@@ -39,7 +39,9 @@ deadlock.add_tier({
 	},
 	beltbox_technology  = "deadlock-stacking-2",
 })
-table.insert(data.raw.technology["deadlock-stacking-2"].prerequisites, "deadlock-stacking-1")
+if data.raw.technology["deadlock-stacking-2"] then
+	table.insert(data.raw.technology["deadlock-stacking-2"].prerequisites, "deadlock-stacking-1")
+end
 
 -- tier 3
 deadlock.add_tier({
@@ -64,4 +66,6 @@ deadlock.add_tier({
 	beltbox_category    = "crafting-with-fluid",
 	beltbox_technology  = "deadlock-stacking-3",
 })
-table.insert(data.raw.technology["deadlock-stacking-3"].prerequisites, "deadlock-stacking-2")
+if data.raw.technology["deadlock-stacking-3"] then
+	table.insert(data.raw.technology["deadlock-stacking-3"].prerequisites, "deadlock-stacking-2")
+end
