@@ -1,8 +1,14 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.0.6
+Date: 05. 03. 2019
+  Changes:
+    - Set the auto-unstack option back to disabled by default, those who prefer it can enable in settings
+    - Add upgrade relationships between loaders and beltboxes for the base upgrade planner tool
+---------------------------------------------------------------------------------------------------
 Version: 2.0.5
 Date: 04. 03. 2019
   Bugfixes:
-    - Fix error in by tech dependencies when beltboxes are disabled
+    - Fix error in tech dependencies when beltboxes are disabled
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.4
 Date: 03. 03. 2019
