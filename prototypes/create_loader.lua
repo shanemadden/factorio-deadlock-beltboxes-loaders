@@ -159,7 +159,7 @@ local function create_loader_item(tier_table)
 		place_result = tier_table.loader,
 		group = "logistics",
 		subgroup = "beltboxes",
-		order = "a"..(tier_table.order or tier_table.loader),
+		order = string.format("a%s%s", (tier_table.order or tier_table.loader), "-deadlock-loader"),
 	}
 	return item
 end
