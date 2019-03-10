@@ -29,7 +29,8 @@ local function create_loader_belt_component(source)
 end
 
 local function create_loader_entity(tier_table)
-	local entity = table.deepcopy(data.raw["loader"]["loader"])
+	local entity = {}
+	entity.type = "loader"
 	entity.name = tier_table.loader
 	entity.localised_description = {"entity-description.deadlock-loader"}
 	entity.icons = {
@@ -37,16 +38,23 @@ local function create_loader_entity(tier_table)
 		{ icon = "__deadlock-beltboxes-loaders__/graphics/loader-icon-mask.png", tint = tier_table.colour },
 	}
 	entity.icon_size = 32
+	entity.flags = {"placeable-neutral", "player-creation", "fast-replaceable-no-build-while-moving"}
 	entity.vehicle_impact_sound = { filename = "__base__/sound/car-metal-impact.ogg", volume = 1.0 }
 	entity.open_sound = { filename = "__base__/sound/wooden-chest-open.ogg", volume = 1.0 }
 	entity.close_sound = { filename = "__base__/sound/wooden-chest-close.ogg", volume = 1.0 }
+	entity.corpse = "small-remnants"
 	entity.collision_box = { {-0.2, -0.2}, {0.2, 0.2} }
 	entity.collision_mask = {"item-layer", "object-layer", "player-layer", "water-tile"}
 	entity.selection_box = { {-0.5, -0.5}, {0.5, 0.5} }
 	entity.minable = { hardness = 0.2, mining_time = 0.5, result = tier_table.loader_item or tier_table.loader }
+	entity.max_health = 170
+	entity.resistances = {{type = "fire", percent = 60 }}
 	entity.belt_distance = 0
 	entity.container_distance = 1.0
 	entity.belt_length = 0.5
+	entity.filter_count = 5
+	entity.animation_speed_coefficient = 32
+	entity.fast_replaceable_group = "transport-belt"
 	entity.speed = data.raw["transport-belt"][tier_table.transport_belt].speed
 	entity.structure = {
 		direction_in = {

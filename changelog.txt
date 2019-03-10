@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.0.8
+Date: 10. 03. 2019
+  Changes:
+    - Alter the way the entity tables are created for loaders to be safe if the vanilla loaders have been changed - fixes conflict with Loader Redux
+    - Move loaders to the transport-belt fast replace group, matching beltboxes
+---------------------------------------------------------------------------------------------------
 Version: 2.0.7
 Date: 06. 03. 2019
   Changes:
