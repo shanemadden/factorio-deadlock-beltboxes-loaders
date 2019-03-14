@@ -44,9 +44,15 @@ if not data.raw["item-subgroup"]["beltboxes"] then
 	data:extend({
 		{
 			type = "item-subgroup",
-			name = "beltboxes",
+			name = "loaders",
 			group = "logistics",
 			order = "bb",
+		},
+		{
+			type = "item-subgroup",
+			name = "beltboxes",
+			group = "logistics",
+			order = "bba",
 		},
 		{
 			type = "recipe-category",

@@ -166,7 +166,7 @@ local function create_loader_item(tier_table)
 		flags = {},
 		place_result = tier_table.loader,
 		group = "logistics",
-		subgroup = "beltboxes",
+		subgroup = "loaders",
 		order = string.format("a%s%s", (tier_table.order or tier_table.loader), "-deadlock-loader"),
 	}
 	return item
@@ -179,7 +179,7 @@ local function create_loader_recipe(tier_table)
 		localised_description = {"entity-description.deadlock-loader"},
 		category = tier_table.loader_category,
 		group = "logistics",
-		subgroup = "beltboxes",
+		subgroup = "loaders",
 		order = "a"..(tier_table.order or tier_table.loader),
 		enabled = false,
 		ingredients = tier_table.loader_ingredients,
