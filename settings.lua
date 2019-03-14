@@ -35,6 +35,20 @@ data:extend({
 		setting_type = "startup",
 		default_value = false,
 	},
+	{
+		type = "bool-setting",
+		name = "deadlock-strict-fast-replace-beltboxes",
+		order = "f",
+		setting_type = "startup",
+		default_value = false,
+	},
+	{
+		type = "bool-setting",
+		name = "deadlock-strict-fast-replace-loaders",
+		order = "g",
+		setting_type = "startup",
+		default_value = false,
+	},
 	-- runtime
 	{
 		type = "bool-setting",

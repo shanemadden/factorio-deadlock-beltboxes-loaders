@@ -11,7 +11,6 @@ local function create_beltbox_entity(tier_table)
 		},
 		icon_size = 32,
 		flags = { "placeable-neutral", "placeable-player", "player-creation" },
-		fast_replaceable_group = "transport-belt",
 		animation = {
 			layers = {
 				{
@@ -112,6 +111,11 @@ local function create_beltbox_entity(tier_table)
 			max_sounds_per_type = 3,
 		},
 	}
+	if settings.startup["deadlock-strict-fast-replace-beltboxes"].value then
+		entity.fast_replaceable_group = "deadlock-beltbox"
+	else
+		entity.fast_replaceable_group = "transport-belt"
+	end
 	return entity
 end
 

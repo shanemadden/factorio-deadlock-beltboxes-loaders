@@ -38,7 +38,7 @@ local function create_loader_entity(tier_table)
 		{ icon = "__deadlock-beltboxes-loaders__/graphics/loader-icon-mask.png", tint = tier_table.colour },
 	}
 	entity.icon_size = 32
-	entity.flags = {"placeable-neutral", "player-creation", "fast-replaceable-no-build-while-moving"}
+	entity.flags = {"placeable-neutral", "player-creation"}
 	entity.vehicle_impact_sound = { filename = "__base__/sound/car-metal-impact.ogg", volume = 1.0 }
 	entity.open_sound = { filename = "__base__/sound/wooden-chest-open.ogg", volume = 1.0 }
 	entity.close_sound = { filename = "__base__/sound/wooden-chest-close.ogg", volume = 1.0 }
@@ -54,7 +54,11 @@ local function create_loader_entity(tier_table)
 	entity.belt_length = 0.5
 	entity.filter_count = 5
 	entity.animation_speed_coefficient = 32
-	entity.fast_replaceable_group = "transport-belt"
+	if settings.startup["deadlock-strict-fast-replace-loaders"].value then
+		entity.fast_replaceable_group = "deadlock-loader"
+	else
+		entity.fast_replaceable_group = "transport-belt"
+	end
 	entity.speed = data.raw["transport-belt"][tier_table.transport_belt].speed
 	entity.structure = {
 		direction_in = {

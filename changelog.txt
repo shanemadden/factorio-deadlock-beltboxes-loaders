@@ -4,6 +4,7 @@ Date: 14. 03. 2019
   Changes:
     - Update beltbox emission attributes for new format in Factorio 0.17.12 (requires this version)
     - Split loaders and beltboxes into their own subgroups
+    - Add options to split loaders and beltboxes into strict fast replace groups
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.8
 Date: 10. 03. 2019
