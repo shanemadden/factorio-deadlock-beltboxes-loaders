@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.0.10
+Date: 19. 03. 2019
+  Changes:
+    - Add optional dep of bobplates because of the numerous changes it makes to vanilla items
+    - Alter localized name of the tier 1 beltbox to make more sense alongside a tier named "Basic"
+---------------------------------------------------------------------------------------------------
 Version: 2.0.9
 Date: 14. 03. 2019
   Changes:
