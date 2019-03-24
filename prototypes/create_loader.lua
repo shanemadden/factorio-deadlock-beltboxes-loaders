@@ -34,10 +34,10 @@ local function create_loader_entity(tier_table)
 	entity.name = tier_table.loader
 	entity.localised_description = {"entity-description.deadlock-loader"}
 	entity.icons = {
-		{ icon = "__deadlock-beltboxes-loaders__/graphics/loader-icon-base.png" },
-		{ icon = "__deadlock-beltboxes-loaders__/graphics/loader-icon-mask.png", tint = tier_table.colour },
+		{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/loader-icon-base-64.png" },
+		{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/loader-icon-mask-64.png", tint = tier_table.colour },
 	}
-	entity.icon_size = 32
+	entity.icon_size = 64
 	entity.flags = {"placeable-neutral", "player-creation"}
 	entity.vehicle_impact_sound = { filename = "__base__/sound/car-metal-impact.ogg", volume = 1.0 }
 	entity.open_sound = { filename = "__base__/sound/wooden-chest-open.ogg", volume = 1.0 }
@@ -61,41 +61,77 @@ local function create_loader_entity(tier_table)
 	end
 	entity.speed = data.raw["transport-belt"][tier_table.transport_belt].speed
 	entity.structure = {
+		back_patch = {
+			sheet = {
+				hr_version = {
+					filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/loader-back.png",
+					height = 96,
+					priority = "extra-high",
+					width = 96,
+					scale = 0.5,
+					shift = { 0, 0 },
+				},
+				filename = "__deadlock-beltboxes-loaders__/graphics/entities/low/loader-back.png",
+				height = 48,
+				priority = "extra-high",
+				width = 48,
+				scale = 1,
+				shift = { 0, 0 },
+			},
+		},
 		direction_in = {
 			sheets = {
 				{
 					hr_version = {
-						filename = "__deadlock-beltboxes-loaders__/graphics/hr-loader-base.png",
-						height = 64,
-						priority = "extra-high",
-						width = 80,
+						draw_as_shadow = true,
+						filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/loader-shadow.png",
+						height = 96,
+						priority = "medium",
+						width = 144,
 						scale = 0.5,
-						shift = { 0.125, 0 },
+						shift = { 0.5, 0 },
 					},
-					filename = "__deadlock-beltboxes-loaders__/graphics/lr-loader-base.png",
-					height = 32,
-					priority = "extra-high",
-					width = 40,
+					draw_as_shadow = true,
+					filename = "__deadlock-beltboxes-loaders__/graphics/entities/low/loader-shadow.png",
+					height = 48,
+					priority = "medium",
+					width = 72,
 					scale = 1,
-					shift = { 0.125, 0 },
+					shift = { 0.5, 0 },
 				},
 				{
 					hr_version = {
-						filename = "__deadlock-beltboxes-loaders__/graphics/hr-loader-mask.png",
-						height = 64,
+						filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/loader-base.png",
+						height = 96,
 						priority = "extra-high",
-						width = 80,
+						width = 96,
+						scale = 0.5,
+						shift = { 0, 0 },
+					},
+					filename = "__deadlock-beltboxes-loaders__/graphics/entities/low/loader-base.png",
+					height = 48,
+					priority = "extra-high",
+					width = 48,
+					scale = 1,
+					shift = { 0, 0 },
+				},
+				{
+					hr_version = {
+						filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/loader-mask.png",
+						height = 96,
+						priority = "extra-high",
+						width = 96,
 						scale = 0.5,
 						tint = tier_table.colour,
-						shift = { 0.125, 0 },
+						shift = { 0, 0 },
 					},
-					filename = "__deadlock-beltboxes-loaders__/graphics/lr-loader-mask.png",
-					height = 32,
+					filename = "__deadlock-beltboxes-loaders__/graphics/entities/low/loader-mask.png",
+					height = 48,
 					priority = "extra-high",
-					width = 40,
+					width = 48,
 					scale = 1,
+					shift = { 0, 0 },
 					tint = tier_table.colour,
-					shift = { 0.125, 0 },
 				},
 			},
 		},
@@ -103,39 +139,59 @@ local function create_loader_entity(tier_table)
 			sheets = {
 				{
 					hr_version = {
-						filename = "__deadlock-beltboxes-loaders__/graphics/hr-loader-base.png",
-						height = 64,
-						priority = "extra-high",
-						width = 80,
+						draw_as_shadow = true,
+						filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/loader-shadow.png",
+						height = 96,
+						priority = "medium",
+						width = 144,
 						scale = 0.5,
-						shift = { 0.125, 0 },
+						shift = { 0.5, 0 },
 					},
-					filename = "__deadlock-beltboxes-loaders__/graphics/lr-loader-base.png",
-					height = 32,
-					priority = "extra-high",
-					width = 40,
+					draw_as_shadow = true,
+					filename = "__deadlock-beltboxes-loaders__/graphics/entities/low/loader-shadow.png",
+					height = 48,
+					priority = "medium",
+					width = 72,
 					scale = 1,
-					shift = { 0.125, 0 },
+					shift = { 0.5, 0 },
 				},
 				{
 					hr_version = {
-						filename = "__deadlock-beltboxes-loaders__/graphics/hr-loader-mask.png",
-						height = 64,
+						filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/loader-base.png",
+						height = 96,
 						priority = "extra-high",
-						width = 80,
+						width = 96,
 						scale = 0.5,
-						tint = tier_table.colour,
-						shift = { 0.125, 0 },
-						y = 64
+						shift = { 0, 0 },
+						y = 96,
 					},
-					filename = "__deadlock-beltboxes-loaders__/graphics/lr-loader-mask.png",
-					height = 32,
+					filename = "__deadlock-beltboxes-loaders__/graphics/entities/low/loader-base.png",
+					height = 48,
 					priority = "extra-high",
-					width = 40,
+					width = 48,
 					scale = 1,
+					shift = { 0, 0 },
+					y = 48
+				},
+				{
+					hr_version = {
+						filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/loader-mask.png",
+						height = 96,
+						priority = "extra-high",
+						width = 96,
+						scale = 0.5,
+						shift = { 0, 0 },
+						tint = tier_table.colour,
+						y = 96
+					},
+					filename = "__deadlock-beltboxes-loaders__/graphics/entities/low/loader-mask.png",
+					height = 48,
+					priority = "extra-high",
+					width = 48,
+					scale = 1,
+					shift = { 0, 0 },
 					tint = tier_table.colour,
-					shift = { 0.125, 0 },
-					y = 32
+					y = 48
 				},
 			},
 		}
@@ -152,7 +208,7 @@ local function create_loader_entity(tier_table)
 			end
 		end
 	end
-	entity.structure_render_layer = "transport-belt-circuit-connector"
+	entity.structure_render_layer = "object"
 	return entity
 end
 
@@ -162,10 +218,10 @@ local function create_loader_item(tier_table)
 		name = tier_table.loader_item or tier_table.loader,
 		localised_description = {"entity-description.deadlock-loader"},
 		icons = {
-			{ icon = "__deadlock-beltboxes-loaders__/graphics/loader-icon-base.png" },
-			{ icon = "__deadlock-beltboxes-loaders__/graphics/loader-icon-mask.png", tint = tier_table.colour },
+			{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/loader-icon-base-64.png" },
+			{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/loader-icon-mask-64.png", tint = tier_table.colour },
 		},
-		icon_size = 32,
+		icon_size = 64,
 		stack_size = 50,
 		flags = {},
 		place_result = tier_table.loader,

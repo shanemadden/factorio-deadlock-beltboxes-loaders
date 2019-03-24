@@ -28,7 +28,7 @@ function DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size)
 			DBL.log_error(string.format("Can't create stacks for item with no icon properties %s", item_name))
 			return
 		end
-		stacked_icons = { { icon = "__deadlock-beltboxes-loaders__/graphics/blank.png", scale = 1, icon_size = 32 } }
+		stacked_icons = { { icon = "__deadlock-beltboxes-loaders__/graphics/icons/blank.png", scale = 1, icon_size = 32 } }
 		for i = 1, -1, -1 do
 			for _,layer in pairs(temp_icons) do
 				layer.shift = {0, i*3}
@@ -83,7 +83,7 @@ function DBL.create_stacking_recipes(item_name, item_type, icon_size)
 	local stack_icons = table.deepcopy(base_icons)
 	table.insert(stack_icons, 
 		{
-			icon = string.format("__deadlock-beltboxes-loaders__/graphics/arrow-d-%d.png", icon_size),
+			icon = string.format("__deadlock-beltboxes-loaders__/graphics/icons/arrow-d-%d.png", icon_size),
 			scale = 0.5 * 32 / icon_size,
 			icon_size = icon_size,
 		}
@@ -124,7 +124,7 @@ function DBL.create_stacking_recipes(item_name, item_type, icon_size)
 		local unstack_icons = table.deepcopy(base_icons)
 		table.insert(unstack_icons, 
 			{
-				icon = string.format("__deadlock-beltboxes-loaders__/graphics/arrow-u-%d.png", icon_size),
+				icon = string.format("__deadlock-beltboxes-loaders__/graphics/icons/arrow-u-%d.png", icon_size),
 				scale = 0.5 * 32 / icon_size,
 			}
 		)

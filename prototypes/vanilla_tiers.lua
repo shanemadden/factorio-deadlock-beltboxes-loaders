@@ -1,7 +1,7 @@
 -- tier 1
 deadlock.add_tier({
 	transport_belt      = "transport-belt",
-	colour              = {r=225, g=165, b=10},
+	colour              = {r=210, g=180, b=80},
 	underground_belt    = "underground-belt",
 	splitter            = "splitter",
 	technology          = "logistics",
@@ -28,7 +28,7 @@ end
 -- tier 2
 deadlock.add_tier({
 	transport_belt      = "fast-transport-belt",
-	colour              = {r=225, g=10, b=10},
+	colour              = {r=210, g=60, b=60},
 	underground_belt    = "fast-underground-belt",
 	splitter            = "fast-splitter",
 	technology          = "logistics-2",
@@ -58,7 +58,7 @@ end
 -- tier 3
 deadlock.add_tier({
 	transport_belt      = "express-transport-belt",
-	colour              = {r=10, g=165, b=225},
+	colour              = {r=80, g=180, b=210},
 	underground_belt    = "express-underground-belt",
 	splitter            = "express-splitter",
 	technology          = "logistics-3",

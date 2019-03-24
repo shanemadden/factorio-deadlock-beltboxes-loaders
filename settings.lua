@@ -37,6 +37,13 @@ data:extend({
 	},
 	{
 		type = "bool-setting",
+		name = "deadlock-stacking-show-alt-info",
+		order = "f",
+		setting_type = "startup",
+		default_value = true,
+	},
+	{
+		type = "bool-setting",
 		name = "deadlock-strict-fast-replace-beltboxes",
 		order = "f",
 		setting_type = "startup",
