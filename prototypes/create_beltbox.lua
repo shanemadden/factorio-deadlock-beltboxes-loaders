@@ -1,72 +1,126 @@
 local DBL = require("prototypes.shared")
 
+-- average a colour with off-white, to get a brighter contrast colour for lamps and lights
+local function brighter_colour(c)
+	local w = 240
+	return { r = math.floor((c.r + w)/2), g = math.floor((c.g + w)/2), b = math.floor((c.b + w)/2) }
+end
+
 local function create_beltbox_entity(tier_table)
+	local crafting_speed = data.raw["transport-belt"][tier_table.transport_belt].speed * 18
 	local entity = {
 		type = "furnace",
 		name = tier_table.beltbox,
 		localised_description = {"entity-description.deadlock-beltbox"},
 		icons = {
-			{ icon = "__deadlock-beltboxes-loaders__/graphics/beltbox-icon-base.png" },
-			{ icon = "__deadlock-beltboxes-loaders__/graphics/beltbox-icon-mask.png", tint = tier_table.colour },
+			{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/beltbox-icon-base-64.png" },
+			{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/beltbox-icon-mask-64.png", tint = tier_table.colour },
 		},
-		icon_size = 32,
+		icon_size = 64,
 		flags = { "placeable-neutral", "placeable-player", "player-creation" },
 		fast_replaceable_group = "transport-belt",
 		animation = {
 			layers = {
 				{
-					draw_as_shadow = true,
 					hr_version = {
 						draw_as_shadow = true,
-						filename = "__deadlock-beltboxes-loaders__/graphics/hr-beltbox-shadow.png",
-						frame_count = 8,
-						height = 64,
-						priority = "high",
+						filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/beltbox-shadow.png",
+						animation_speed = 1 / crafting_speed,
+						frame_count = 60,
+						line_length = 10,
+						height = 96,
 						scale = 0.5,
-						shift = {0.25, 0},
-						width = 64
+						shift = {0.5, 0},
+						width = 144
 					},
-					filename = "__deadlock-beltboxes-loaders__/graphics/lr-beltbox-shadow.png",
-					frame_count = 8,
-					height = 32,
+					draw_as_shadow = true,
+					filename = "__deadlock-beltboxes-loaders__/graphics/entities/low/beltbox-shadow.png",
+					animation_speed = 1 / crafting_speed,
+					frame_count = 60,
+					line_length = 10,
+					height = 48,
+					scale = 1,
+					shift = {0.5, 0},
+					width = 72	
+				},
+				{
+					hr_version = {
+						filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/beltbox-base.png",
+						animation_speed = 1 / crafting_speed,
+						priority = "high",
+						frame_count = 60,
+						line_length = 10,
+						height = 96,
+						scale = 0.5,
+						shift = {0, 0},
+						width = 96
+					},
+					filename = "__deadlock-beltboxes-loaders__/graphics/entities/low/beltbox-base.png",
+					animation_speed = 1 / crafting_speed,
 					priority = "high",
+					frame_count = 60,
+					line_length = 10,
+					height = 48,
 					scale = 1,
-					shift = {0.25, 0},
-					width = 32	
+					shift = {0, 0},
+					width = 48	
 				},
 				{
 					hr_version = {
-						filename = "__deadlock-beltboxes-loaders__/graphics/hr-beltbox-base.png",
-						frame_count = 8,
-						height = 64,
-						width = 64,
-						priority = "extra-high",
-						scale = 0.5,
-					},
-					filename = "__deadlock-beltboxes-loaders__/graphics/lr-beltbox-base.png",
-					frame_count = 8,
-					height = 32,
-					width = 32,
-					priority = "extra-high",
-					scale = 1,
-				},
-				{
-					hr_version = {
-						filename = "__deadlock-beltboxes-loaders__/graphics/hr-beltbox-mask.png",
-						frame_count = 8,
-						height = 64,
-						width = 64,
+						filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/beltbox-mask.png",
+						animation_speed = 1 / crafting_speed,
 						priority = "high",
+						frame_count = 60,
+						line_length = 10,
+						height = 96,
 						scale = 0.5,
+						shift = {0, 0},
+						width = 96,
 						tint = tier_table.colour,
 					},
-					filename = "__deadlock-beltboxes-loaders__/graphics/lr-beltbox-mask.png",
-					frame_count = 8,
-					height = 32,
-					width = 32,
+					filename = "__deadlock-beltboxes-loaders__/graphics/entities/low/beltbox-mask.png",
+					animation_speed = 1 / crafting_speed,
 					priority = "high",
+					frame_count = 60,
+					line_length = 10,
+					height = 48,
 					scale = 1,
+					shift = {0, 0},
+					width = 48,	
 					tint = tier_table.colour,
+				},
+			},
+		},
+		working_visualisations = {
+			{
+				animation = {
+					hr_version = {
+						animation_speed = 1 / crafting_speed,
+						blend_mode = "additive",
+						filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/beltbox-working.png",
+						frame_count = 30,
+						line_length = 10,
+						height = 96,
+						priority = "high",
+						scale = 0.5,
+						tint = brighter_colour(tier_table.colour),
+						width = 96
+					},
+					animation_speed = 1 / crafting_speed,
+					blend_mode = "additive",
+					filename = "__deadlock-beltboxes-loaders__/graphics/entities/low/beltbox-working.png",
+					frame_count = 30,
+					line_length = 10,
+					height = 48,
+					priority = "high",
+					tint = tier_table.colour,
+					width = 48
+				},
+				light = {
+					color = brighter_colour(tier_table.colour),
+					intensity = 0.4,
+					size = 3,
+					shift = {0, 0.25},
 				},
 			},
 		},
@@ -83,7 +137,7 @@ local function create_beltbox_entity(tier_table)
 		result_inventory_size = 1,
 		source_inventory_size = 1,
 		crafting_categories = {"stacking", "unstacking"},
-		crafting_speed = data.raw["transport-belt"][tier_table.transport_belt].speed * 18,
+		crafting_speed = crafting_speed,
 		energy_source = {
 			type = "electric",
 			emissions = 0.025 / (data.raw["transport-belt"][tier_table.transport_belt].speed * 18) ^ 2,
@@ -102,15 +156,16 @@ local function create_beltbox_entity(tier_table)
 		working_sound = {
 			match_speed_to_activity = true,
 			idle_sound = {
-			  filename = "__base__/sound/idle1.ogg",
-			  volume = 0.6
+				filename = "__base__/sound/idle1.ogg",
+				volume = 0.6
 			},
 			sound = {
-			  filename = "__deadlock-beltboxes-loaders__/sounds/fan.ogg",
-			  volume = 1.0
+				filename = "__deadlock-beltboxes-loaders__/sounds/fan.ogg",
+				volume = 1.0
 			},
 			max_sounds_per_type = 3,
 		},
+		show_recipe_icon = settings.startup["deadlock-stacking-show-alt-info"].value,
 	}
 	return entity
 end
@@ -121,10 +176,10 @@ local function create_beltbox_item(tier_table)
 		name = tier_table.beltbox_item or tier_table.beltbox,
 		localised_description = {"entity-description.deadlock-beltbox"},
 		icons = {
-			{ icon = "__deadlock-beltboxes-loaders__/graphics/beltbox-icon-base.png" },
-			{ icon = "__deadlock-beltboxes-loaders__/graphics/beltbox-icon-mask.png", tint = tier_table.colour },
+			{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/beltbox-icon-base-64.png" },
+			{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/beltbox-icon-mask-64.png", tint = tier_table.colour },
 		},
-		icon_size = 32,
+		icon_size = 64,
 		stack_size = 50,
 		flags = {},
 		place_result = tier_table.beltbox,
@@ -163,7 +218,10 @@ local function create_beltbox_technology(tier_table)
 			recipe = tier_table.beltbox_recipe or tier_table.beltbox,
 		}
 	}
-	tech.icon = "__deadlock-beltboxes-loaders__/graphics/deadlock-stacking.png"
+	tech.icons = {
+		{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/beltbox-icon-base-128.png" },
+		{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/beltbox-icon-mask-128.png", tint = tier_table.colour },
+	}
 	tech.name = tier_table.beltbox_technology
 	tech.unit.count = tech.unit.count * 1.5
 	tech.prerequisites = {tier_table.technology}

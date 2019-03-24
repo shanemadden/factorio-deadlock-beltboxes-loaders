@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.1.0
+Date: 23. 03. 2019
+  Changes:
+    - Brand new graphics for beltboxes and loaders which match the 0.17 belt style better.
+    - There is a new mod setting to turn off the alt-mode recipe icon shown on beltboxes.
+---------------------------------------------------------------------------------------------------
 Version: 2.0.8
 Date: 10. 03. 2019
   Changes:
