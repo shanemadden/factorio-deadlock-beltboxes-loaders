@@ -2,8 +2,8 @@
 Version: 2.1.1
 Date: 24. 03. 2019
   Changes:
-    - Drop pollution on beltboxes by a factor of 10 to bring it in line with the intended pollution amount.
-    - Re-add fast-replaceable-no-build-while-moving flag to loaders
+    - Drop pollution on beltboxes to bring it in line with the intended pollution amount.
+    - Re-add fast-replaceable-no-build-while-moving flag to loaders.
 ---------------------------------------------------------------------------------------------------
 Version: 2.1.0
 Date: 23. 03. 2019
