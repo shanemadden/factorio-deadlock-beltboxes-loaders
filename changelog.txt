@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.1.5
+Date: 31. 03. 2019
+  Changes:
+    - Update some stacked item attributes late in the loading process to account for other mods' changes
+    - Removed optional dependency on bobplates that's no longer needed
+---------------------------------------------------------------------------------------------------
 Version: 2.1.4
 Date: 30. 03. 2019
   Bugfixes:

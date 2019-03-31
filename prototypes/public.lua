@@ -176,6 +176,9 @@ function deadlock.add_stack(item_name, graphic_path, target_tech, icon_size, ite
 		end
 	end
 end
+function deadlock.deferred_stacked_item_updates()
+	DBL.deferred_stacked_item_updates()
+end
 
 -- table for legacy public DCL interface
 deadlock_loaders = {}

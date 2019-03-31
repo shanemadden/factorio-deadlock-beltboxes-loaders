@@ -19,8 +19,6 @@ end
 
 DBL.STACK_SIZE = 5
 DBL.CRAFT_TIME = 3 * DBL.STACK_SIZE / 80
-DBL.ITEM_ORDER = 1
-DBL.RECIPE_ORDER = 1
 
 if settings.startup["deadlock-stacking-batch-stacking"].value then
 	DBL.RECIPE_MULTIPLIER = 4
