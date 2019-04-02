@@ -42,7 +42,7 @@ end
 
 
 local items_to_update = {}
-function DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size)
+function DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size, stack_size)
 	DBL.debug(string.format("Creating stacked item: %s", item_name))
 	local temp_icons, stacked_icons, this_fuel_category, this_fuel_acceleration_multiplier, this_fuel_top_speed_multiplier, this_fuel_value, this_fuel_emissions_multiplier
 	if graphic_path then
@@ -72,10 +72,10 @@ function DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size)
 		{
 			type = "item",
 			name = string.format("deadlock-stack-%s", item_name),
-			localised_name = {"item-name.deadlock-stacking-stack", {"item-name."..item_name}, DBL.STACK_SIZE},
+			localised_name = {"item-name.deadlock-stacking-stack", {"item-name."..item_name}, stack_size},
 			icons = stacked_icons,
 			icon_size = icon_size,
-			stack_size = math.floor(data.raw[item_type][item_name].stack_size/DBL.STACK_SIZE),
+			stack_size = math.floor(data.raw[item_type][item_name].stack_size/stack_size),
 			flags = {},
 			subgroup = string.format("stacks-%s", get_group(item_name, item_type)),
 			order = item_order[item_name],
@@ -93,28 +93,37 @@ function DBL.deferred_stacked_item_updates()
 	for stacked_item_name, item_table in pairs(items_to_update) do
 		local item_name = item_table.item_name
 		local item_type = item_table.item_type
+		local stack_size = DBL.STACK_SIZE
+		if data.raw[item_type][item_name].stack_size < stack_size then
+			stack_size = data.raw[item_type][item_name].stack_size
+		end
 		data.raw.item[stacked_item_name].subgroup = string.format("stacks-%s", get_group(item_name, item_type))
-		data.raw.item[stacked_item_name].stack_size = math.floor(data.raw[item_type][item_name].stack_size/DBL.STACK_SIZE)
+		data.raw.item[stacked_item_name].stack_size = math.floor(data.raw[item_type][item_name].stack_size/stack_size)
+		data.raw.item[stacked_item_name].localised_name = {"item-name.deadlock-stacking-stack", {"item-name."..item_name}, stack_size}
+		-- warn when the current stack size causes a loss in inventory density for this item
+		if data.raw[item_type][item_name].stack_size % stack_size > 0 then
+			DBL.log_warning(string.format("Full stack density for %s is reduced to %d from source stack size %d, doesn't divide cleanly by %d", stacked_item_name, (data.raw.item[stacked_item_name].stack_size * stack_size), data.raw[item_type][item_name].stack_size, stack_size))
+		end
 		if data.raw[item_type][item_name].fuel_value then
 			data.raw.item[stacked_item_name].fuel_category = data.raw[item_type][item_name].fuel_category
 			data.raw.item[stacked_item_name].fuel_acceleration_multiplier = data.raw[item_type][item_name].fuel_acceleration_multiplier
 			data.raw.item[stacked_item_name].fuel_top_speed_multiplier = data.raw[item_type][item_name].fuel_top_speed_multiplier
 			data.raw.item[stacked_item_name].fuel_emissions_multiplier = data.raw[item_type][item_name].fuel_emissions_multiplier
 			-- great, the fuel value is a string, with SI units. how very easy to work with
-			data.raw.item[stacked_item_name].fuel_value = (tonumber(string.match(data.raw[item_type][item_name].fuel_value, "%d+")) * DBL.STACK_SIZE) .. string.match(data.raw[item_type][item_name].fuel_value, "%a+")
+			data.raw.item[stacked_item_name].fuel_value = (tonumber(string.match(data.raw[item_type][item_name].fuel_value, "%d+")) * stack_size) .. string.match(data.raw[item_type][item_name].fuel_value, "%a+")
 		end
 	end
 end
 
 -- make stacking/unstacking recipes for a base item
-function DBL.create_stacking_recipes(item_name, item_type, icon_size)
+function DBL.create_stacking_recipes(item_name, item_type, icon_size, stack_size)
 	DBL.debug(string.format("Creating recipes: %s", item_name))
-	-- TODO use a smaller multiplier if the item won't fit at current multiplier
 	local base_icon = data.raw.item[string.format("deadlock-stack-%s", item_name)].icon
 	local base_icons = data.raw.item[string.format("deadlock-stack-%s", item_name)].icons
 	if not base_icons then
 		base_icons = { { icon = base_icon } }
 	end
+	local stack_speed_modifier = stack_size / DBL.STACK_SIZE
 	-- stacking
 	local stack_icons = table.deepcopy(base_icons)
 	table.insert(stack_icons, 
@@ -135,10 +144,10 @@ function DBL.create_stacking_recipes(item_name, item_type, icon_size)
 			order = recipe_order[item_name].."[a]",
 			enabled = false,
 			allow_decomposition = false,
-			ingredients = { {item_name, DBL.STACK_SIZE * DBL.RECIPE_MULTIPLIER} },
+			ingredients = { {item_name, stack_size * DBL.RECIPE_MULTIPLIER} },
 			result = string.format("deadlock-stack-%s", item_name),
 			result_count = DBL.RECIPE_MULTIPLIER,
-			energy_required = DBL.CRAFT_TIME * DBL.RECIPE_MULTIPLIER,
+			energy_required = DBL.CRAFT_TIME * DBL.RECIPE_MULTIPLIER * stack_speed_modifier,
 			icons = stack_icons,
 			icon_size = icon_size, 
 			hidden = true,
@@ -167,8 +176,8 @@ function DBL.create_stacking_recipes(item_name, item_type, icon_size)
 			allow_decomposition = false,
 			ingredients = { {string.format("deadlock-stack-%s", item_name), DBL.RECIPE_MULTIPLIER} },
 			result = item_name,
-			result_count = DBL.STACK_SIZE * DBL.RECIPE_MULTIPLIER,
-			energy_required = DBL.CRAFT_TIME * DBL.RECIPE_MULTIPLIER,
+			result_count = stack_size * DBL.RECIPE_MULTIPLIER,
+			energy_required = DBL.CRAFT_TIME * DBL.RECIPE_MULTIPLIER * stack_speed_modifier,
 			icons = unstack_icons,
 			icon_size = icon_size,
 			hidden = settings.startup["deadlock-stacking-hide-unstacking"].value,

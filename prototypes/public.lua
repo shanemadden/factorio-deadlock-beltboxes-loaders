@@ -152,14 +152,12 @@ function deadlock.add_stack(item_name, graphic_path, target_tech, icon_size, ite
 		DBL.log_error(string.format("Can't create stacks for item that doesn't exist %s", item_name))
 		return
 	end
-	if data.raw[item_type][item_name].stack_size < (DBL.STACK_SIZE * 4) then
-		DBL.log_warning(string.format("Source item stack size is too small for batched recipes: %s", item_name))
-		if data.raw[item_type][item_name].stack_size < DBL.STACK_SIZE then
-			-- https://forums.factorio.com/viewtopic.php?f=7&t=63850
-			DBL.log_error(string.format("..and %s also stacks too small for use in furnaces at all, you'll need to increase its stack size!", item_name))
-			return
-		end
+	-- if the base stack size is lower than our target stack size then use the lower of the two numbers
+	local stack_size = DBL.STACK_SIZE
+	if data.raw[item_type][item_name].stack_size < stack_size then
+		stack_size = data.raw[item_type][item_name].stack_size
 	end
+
 	if icon_size and (icon_size ~= 32 and icon_size ~= 64 and icon_size ~= 128) then
 		DBL.log_error(string.format("Invalid icon_size for %s", item_name))
 		return
@@ -169,8 +167,8 @@ function deadlock.add_stack(item_name, graphic_path, target_tech, icon_size, ite
 	end
 	DBL.debug(string.format("Data validation completed for stacked item %s", item_name))
 	if settings.startup["deadlock-enable-beltboxes"].value then
-		DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size)
-		DBL.create_stacking_recipes(item_name, item_type, icon_size)
+		DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size, stack_size)
+		DBL.create_stacking_recipes(item_name, item_type, icon_size, stack_size)
 		if target_tech then
 			DBL.add_stacks_to_tech(item_name, target_tech)
 		end

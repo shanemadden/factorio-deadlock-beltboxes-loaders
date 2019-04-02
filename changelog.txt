@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.1.6
+Date: 01. 04. 2019
+  Changes:
+    - Added a startup option to set a stack size other than 5
+    - Attempted to fix potential situations where recipes added by third party mods weren't unlocked for existing saves
+---------------------------------------------------------------------------------------------------
 Version: 2.1.5
 Date: 31. 03. 2019
   Changes:

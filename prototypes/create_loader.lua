@@ -240,7 +240,7 @@ local function create_loader_recipe(tier_table)
 		category = tier_table.loader_category,
 		group = "logistics",
 		subgroup = "loaders",
-		order = "a"..(tier_table.order or tier_table.loader),
+		order = string.format("a%s%s", (tier_table.order or tier_table.loader), "-deadlock-loader"),
 		enabled = false,
 		ingredients = tier_table.loader_ingredients,
 		result = tier_table.loader_item or tier_table.loader,

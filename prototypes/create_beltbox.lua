@@ -189,7 +189,7 @@ local function create_beltbox_item(tier_table)
 		place_result = tier_table.beltbox,
 		group = "logistics",
 		subgroup = "beltboxes",
-		order = "b"..(tier_table.order or tier_table.beltbox),
+		order = string.format("b%s%s", (tier_table.order or tier_table.loader), "-deadlock-beltbox"),
 	}
 	return item
 end
@@ -202,7 +202,7 @@ local function create_beltbox_recipe(tier_table)
 		category = tier_table.beltbox_category,
 		group = "logistics",
 		subgroup = "beltboxes",
-		order = "b"..(tier_table.order or tier_table.beltbox),
+		order = string.format("b%s%s", (tier_table.order or tier_table.loader), "-deadlock-beltbox"),
 		enabled = false,
 		ingredients = tier_table.beltbox_ingredients,
 		result = tier_table.beltbox_item or tier_table.beltbox,
