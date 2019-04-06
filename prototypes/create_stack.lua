@@ -93,10 +93,7 @@ function DBL.deferred_stacked_item_updates()
 	for stacked_item_name, item_table in pairs(items_to_update) do
 		local item_name = item_table.item_name
 		local item_type = item_table.item_type
-		local stack_size = DBL.STACK_SIZE
-		if data.raw[item_type][item_name].stack_size < stack_size then
-			stack_size = data.raw[item_type][item_name].stack_size
-		end
+		local stack_size = deadlock.get_item_stack_density(item_name, item_type)
 		data.raw.item[stacked_item_name].subgroup = string.format("stacks-%s", get_group(item_name, item_type))
 		data.raw.item[stacked_item_name].stack_size = math.floor(data.raw[item_type][item_name].stack_size/stack_size)
 		data.raw.item[stacked_item_name].localised_name = {"item-name.deadlock-stacking-stack", {"item-name."..item_name}, stack_size}

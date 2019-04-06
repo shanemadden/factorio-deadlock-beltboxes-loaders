@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.1.7
+Date: 06. 04. 2019
+  Changes:
+    - Re-added optional dependency on ReStack
+    - Added new data stage helper function to the API to get the effective stack size for each item without having to dig into recipes, since it can now vary based on settings and the items themselves
+---------------------------------------------------------------------------------------------------
 Version: 2.1.6
 Date: 01. 04. 2019
   Changes:

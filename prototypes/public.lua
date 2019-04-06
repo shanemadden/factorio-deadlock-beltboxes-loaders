@@ -121,6 +121,19 @@ function deadlock.add_tier(tier_table)
 	end
 end
 
+-- return the effective stack density of an item, exposed publicly for other mods if they need in recipes etc
+function deadlock.get_item_stack_density(item_name, item_type)
+	-- This depends on two things - the stack size startup setting (defaulting to 5)
+	-- as well as the stack size of the item
+	-- For instance if a mod adds an item whose stacks only go to 5 but the startup setting
+	-- is for items to stack to 10, most items will be stacking to 10 but that specific item will only stack to 5
+	local stack_size = DBL.STACK_SIZE
+	if data.raw[item_type][item_name].stack_size < stack_size then
+		stack_size = data.raw[item_type][item_name].stack_size
+	end
+	return stack_size
+end
+
 local allowed_item_types = {
 	["item"] = true,
 	["ammo"] = true,
@@ -152,12 +165,6 @@ function deadlock.add_stack(item_name, graphic_path, target_tech, icon_size, ite
 		DBL.log_error(string.format("Can't create stacks for item that doesn't exist %s", item_name))
 		return
 	end
-	-- if the base stack size is lower than our target stack size then use the lower of the two numbers
-	local stack_size = DBL.STACK_SIZE
-	if data.raw[item_type][item_name].stack_size < stack_size then
-		stack_size = data.raw[item_type][item_name].stack_size
-	end
-
 	if icon_size and (icon_size ~= 32 and icon_size ~= 64 and icon_size ~= 128) then
 		DBL.log_error(string.format("Invalid icon_size for %s", item_name))
 		return
@@ -167,6 +174,7 @@ function deadlock.add_stack(item_name, graphic_path, target_tech, icon_size, ite
 	end
 	DBL.debug(string.format("Data validation completed for stacked item %s", item_name))
 	if settings.startup["deadlock-enable-beltboxes"].value then
+		local stack_size = deadlock.get_item_stack_density(item_name, item_type)
 		DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size, stack_size)
 		DBL.create_stacking_recipes(item_name, item_type, icon_size, stack_size)
 		if target_tech then
