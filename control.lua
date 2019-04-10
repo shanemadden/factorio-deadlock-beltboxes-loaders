@@ -1,4 +1,4 @@
-local STACK_SIZE = 5
+local STACK_SIZE = settings.startup["deadlock-stack-size"].value
 
 local created_loader = {}
 do
@@ -128,9 +128,16 @@ local function on_picked_up_item(event)
 			count = 1,
 		})
 		-- try to add a stack worth of the source item to the inventory
+		local add_count = STACK_SIZE
+		-- if the base item's stack size is lower than the configured STACK_SIZE then
+		-- this should reward the lower of the two
+		local prototype = game.item_prototypes[string.sub(event.item_stack.name, 16)]
+		if STACK_SIZE > prototype.stack_size then
+			add_count = prototype.stack_size
+		end
 		local inserted = player.insert({
 			name = string.sub(event.item_stack.name, 16),
-			count = STACK_SIZE,
+			count = add_count,
 		})
 		if inserted == 0 then
 			-- the item couldn't insert for whatever reason, put the stacked version back
@@ -152,3 +159,21 @@ local function on_load(event)
 end
 script.on_load(on_load)
 script.on_init(on_load)
+
+local function on_configuration_changed(config)
+	-- scan the forces' technologies for any of our loaders or beltboxes that should be
+	-- unlocked but aren't, likely due to the mod adding them just being added to the save
+	for _, force in pairs(game.forces) do
+		for tech_name, tech_table in pairs(force.technologies) do
+			if tech_table.researched then
+				-- find any beltboxes or loaders or stacks in effects and unlock
+				for _, effect_table in ipairs(tech_table.effects) do
+					if effect_table.type == "unlock-recipe" and (string.find(game.recipe_prototypes[effect_table.recipe].order, "%-deadlock%-") or string.find(game.recipe_prototypes[effect_table.recipe].name, "deadlock%-")) then
+						force.recipes[effect_table.recipe].enabled = true
+					end
+				end
+			end
+		end
+	end
+end
+script.on_configuration_changed(on_configuration_changed)

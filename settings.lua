@@ -15,6 +15,23 @@ data:extend({
 		default_value = true,
 	},
 	{
+		type = "int-setting",
+		name = "deadlock-stack-size",
+		order = "bb",
+		setting_type = "startup",
+		default_value = 5,
+		allowed_values = {
+			4,
+			5, 
+			8,
+			10,
+			16,
+			25,
+			50,
+			100,
+		},
+	},
+	{
 		type = "bool-setting",
 		name = "deadlock-stacking-auto-unstack",
 		order = "c",

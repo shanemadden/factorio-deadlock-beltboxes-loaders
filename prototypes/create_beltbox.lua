@@ -22,28 +22,6 @@ local function create_beltbox_entity(tier_table)
 			layers = {
 				{
 					hr_version = {
-						draw_as_shadow = true,
-						filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/beltbox-shadow.png",
-						animation_speed = 1 / crafting_speed,
-						frame_count = 60,
-						line_length = 10,
-						height = 96,
-						scale = 0.5,
-						shift = {0.5, 0},
-						width = 144
-					},
-					draw_as_shadow = true,
-					filename = "__deadlock-beltboxes-loaders__/graphics/entities/low/beltbox-shadow.png",
-					animation_speed = 1 / crafting_speed,
-					frame_count = 60,
-					line_length = 10,
-					height = 48,
-					scale = 1,
-					shift = {0.5, 0},
-					width = 72	
-				},
-				{
-					hr_version = {
 						filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/beltbox-base.png",
 						animation_speed = 1 / crafting_speed,
 						priority = "high",
@@ -87,6 +65,28 @@ local function create_beltbox_entity(tier_table)
 					shift = {0, 0},
 					width = 48,	
 					tint = tier_table.colour,
+				},
+				{
+					hr_version = {
+						draw_as_shadow = true,
+						filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/beltbox-shadow.png",
+						animation_speed = 1 / crafting_speed,
+						frame_count = 60,
+						line_length = 10,
+						height = 96,
+						scale = 0.5,
+						shift = {0.5, 0},
+						width = 144
+					},
+					draw_as_shadow = true,
+					filename = "__deadlock-beltboxes-loaders__/graphics/entities/low/beltbox-shadow.png",
+					animation_speed = 1 / crafting_speed,
+					frame_count = 60,
+					line_length = 10,
+					height = 48,
+					scale = 1,
+					shift = {0.5, 0},
+					width = 72	
 				},
 			},
 		},
@@ -189,7 +189,7 @@ local function create_beltbox_item(tier_table)
 		place_result = tier_table.beltbox,
 		group = "logistics",
 		subgroup = "beltboxes",
-		order = "b"..(tier_table.order or tier_table.beltbox),
+		order = string.format("b%s%s", (tier_table.order or tier_table.loader), "-deadlock-beltbox"),
 	}
 	return item
 end
@@ -202,7 +202,7 @@ local function create_beltbox_recipe(tier_table)
 		category = tier_table.beltbox_category,
 		group = "logistics",
 		subgroup = "beltboxes",
-		order = "b"..(tier_table.order or tier_table.beltbox),
+		order = string.format("b%s%s", (tier_table.order or tier_table.loader), "-deadlock-beltbox"),
 		enabled = false,
 		ingredients = tier_table.beltbox_ingredients,
 		result = tier_table.beltbox_item or tier_table.beltbox,

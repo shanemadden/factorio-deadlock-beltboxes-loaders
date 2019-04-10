@@ -1,4 +1,37 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.1.8
+Date: 10. 04. 2019
+  Bugfixes:
+    - Updated beltbox render order to fix occasional flickering issues
+---------------------------------------------------------------------------------------------------
+Version: 2.1.7
+Date: 06. 04. 2019
+  Changes:
+    - Re-added optional dependency on ReStack
+    - Added new data stage helper function to the API to get the effective stack size for each item without having to dig into recipes, since it can now vary based on settings and the items themselves
+---------------------------------------------------------------------------------------------------
+Version: 2.1.6
+Date: 01. 04. 2019
+  Changes:
+    - Added a startup option to set a stack size other than 5
+    - Attempted to fix potential situations where recipes added by third party mods weren't unlocked for existing saves
+---------------------------------------------------------------------------------------------------
+Version: 2.1.5
+Date: 31. 03. 2019
+  Changes:
+    - Update some stacked item attributes late in the loading process to account for other mods' changes
+    - Removed optional dependency on bobplates that's no longer needed
+---------------------------------------------------------------------------------------------------
+Version: 2.1.4
+Date: 30. 03. 2019
+  Bugfixes:
+    - Fix recipe icon generation for items with 128 pixel icons
+---------------------------------------------------------------------------------------------------
+Version: 2.1.3
+Date: 25. 03. 2019
+  Changes:
+    - Added French translation courtesy of Krysh Nar on GitHub
+---------------------------------------------------------------------------------------------------
 Version: 2.1.2
 Date: 24. 03. 2019
   Changes:
