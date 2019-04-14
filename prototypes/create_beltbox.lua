@@ -137,7 +137,7 @@ local function create_beltbox_entity(tier_table)
 		crafting_speed = crafting_speed,
 		energy_source = {
 			type = "electric",
-			emissions_per_second_per_watt = (0.000003125 / data.raw["transport-belt"][tier_table.transport_belt].speed ^ 2) / 96,
+			emissions_per_minute = 3 * 0.03125 / data.raw["transport-belt"][tier_table.transport_belt].speed,
 			usage_priority = "secondary-input",
 			drain = "15kW",
 		},
