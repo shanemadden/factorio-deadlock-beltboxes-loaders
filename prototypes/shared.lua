@@ -18,7 +18,7 @@ function DBL.log_warning(message)
 end
 
 DBL.STACK_SIZE = settings.startup["deadlock-stack-size"].value
-DBL.CRAFT_TIME = 3 * DBL.STACK_SIZE / 80
+DBL.CRAFT_TIME = 3 * DBL.STACK_SIZE / 45
 
 if settings.startup["deadlock-stacking-batch-stacking"].value then
 	DBL.RECIPE_MULTIPLIER = 4

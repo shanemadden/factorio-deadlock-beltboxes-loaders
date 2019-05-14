@@ -7,7 +7,7 @@ local function brighter_colour(c)
 end
 
 local function create_beltbox_entity(tier_table)
-	local crafting_speed = data.raw["transport-belt"][tier_table.transport_belt].speed * 18
+	local crafting_speed = data.raw["transport-belt"][tier_table.transport_belt].speed * 32
 	local entity = {
 		type = "furnace",
 		name = tier_table.beltbox,
