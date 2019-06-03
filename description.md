@@ -1,4 +1,4 @@
-![beltbox](https://i.imgur.com/31g3wov.gif)
+![beltbox](https://i.imgur.com/JoFG35F.gif)
 
 # Deadlock's Stacking Beltboxes and Compact Loaders
 
