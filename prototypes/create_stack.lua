@@ -8,62 +8,31 @@ local function get_group(item, item_type)
 	return g
 end
 
--- assign a order for the stacked items based on the order in which they're created,
--- remembering the assigned order for any items that get stacking applied multiple times
-local item_order = {}
-do
-	-- when this table is checked (during stack creation), the first check for an item in the table will fail
-	-- and the __index function will be called, assigning an order, storing and returning it
-	-- for later checks of the same key (item name), the stored order string will be in the table and __index won't be hit.
-	local item_increment = 1
-	local item_order_metatable = {
-		__index = function(table, key)
-			table[key] = string.format("%03d", item_increment)
-			item_increment = item_increment + 1
-			return table[key]
-		end
-	}
-	item_order = setmetatable(item_order, item_order_metatable)
+local function get_mipmap_level(size)
+	return math.max(math.log(size,2)-2, 1) -- 64 -> 4, 32 -> 3, 16 -> 2, 8 -> 1
 end
-
--- and the same as above for recipes
-local recipe_order = {}
-do
-	local recipe_increment = 1
-	local recipe_order_metatable = {
-		__index = function(table, key)
-			table[key] = string.format("%03d", recipe_increment)
-			recipe_increment = recipe_increment + 1
-			return table[key]
-		end
-	}
-	recipe_order = setmetatable(recipe_order, recipe_order_metatable)
-end
-
 
 local items_to_update = {}
 function DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size, stack_size)
 	DBL.debug(string.format("Creating stacked item: %s", item_name))
-	local temp_icons, stacked_icons, this_fuel_category, this_fuel_acceleration_multiplier, this_fuel_top_speed_multiplier, this_fuel_value, this_fuel_emissions_multiplier
+	local temp_icons, stacked_icons --, this_fuel_category, this_fuel_acceleration_multiplier, this_fuel_top_speed_multiplier, this_fuel_value, this_fuel_emissions_multiplier
 	if graphic_path then
-		stacked_icons = { { icon = graphic_path, icon_size = icon_size } }
+		stacked_icons = { { icon = graphic_path, icon_size = icon_size, icon_mipmaps = get_mipmap_level(icon_size) } }
 	else
 		if data.raw[item_type][item_name].icon then
-			temp_icons = { { icon = data.raw[item_type][item_name].icon, icon_size = icon_size } }
-			DBL.log_warning(string.format("creating layered stack icon (%s), this is 4x more rendering effort than a custom icon", item_name))
+			temp_icons = { { icon = data.raw[item_type][item_name].icon, icon_size = data.raw[item_type][item_name].icon_size, icon_mipmaps = data.raw[item_type][item_name].icon_mipmaps } }
 		elseif data.raw[item_type][item_name].icons then
-			temp_icons = data.raw[item_type][item_name].icons
-			DBL.log_warning(string.format("creating layers-of-layers stack icon (%s), this is %dx more rendering effort than a custom icon!", item_name, 1+(#temp_icons*3)))
+			temp_icons = table.deepcopy(data.raw[item_type][item_name].icons)
 		else
-			DBL.log_error(string.format("Can't create stacks for item with no icon properties %s", item_name))
+			DBL.log_error(string.format("Can't create stacks for item with no icon properties (%s)", item_name))
 			return
 		end
+		DBL.log_warning(string.format("creating layered stack icon (%s), this is %dx more rendering effort than a custom stack icon and NOT ADVISED!", item_name, 1+(#temp_icons*3)))
 		stacked_icons = { { icon = "__deadlock-beltboxes-loaders__/graphics/icons/blank.png", scale = 1, icon_size = 32 } }
 		for i = 1, -1, -1 do
 			for _,layer in pairs(temp_icons) do
+				layer.scale = 0.85 * 32/layer.icon_size
 				layer.shift = {0, i*3}
-				layer.scale = 0.85 * 32/icon_size
-				layer.icon_size = icon_size
 				table.insert(stacked_icons, table.deepcopy(layer))
 			end
 		end
@@ -74,11 +43,11 @@ function DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size, 
 			name = string.format("deadlock-stack-%s", item_name),
 			localised_name = {"item-name.deadlock-stacking-stack", {"item-name."..item_name}, stack_size},
 			icons = stacked_icons,
-			icon_size = icon_size,
+			--icon_size = icon_size,
 			stack_size = math.floor(data.raw[item_type][item_name].stack_size/stack_size),
 			flags = {},
 			subgroup = string.format("stacks-%s", get_group(item_name, item_type)),
-			order = item_order[item_name],
+			order = DBL.item_order[item_name],
 			allow_decomposition = false,
 		}
 	})
@@ -138,7 +107,7 @@ function DBL.create_stacking_recipes(item_name, item_type, icon_size, stack_size
 			category = "stacking",
 			group = "intermediate-products",
 			subgroup = data.raw.item[string.format("deadlock-stack-%s", item_name)].subgroup,
-			order = recipe_order[item_name].."[a]",
+			order = DBL.recipe_order[item_name].."[a]",
 			enabled = false,
 			allow_decomposition = false,
 			ingredients = { {item_name, stack_size * DBL.RECIPE_MULTIPLIER} },
@@ -168,7 +137,7 @@ function DBL.create_stacking_recipes(item_name, item_type, icon_size, stack_size
 			category = "unstacking",
 			group = "intermediate-products",
 			subgroup = data.raw.item[string.format("deadlock-stack-%s", item_name)].subgroup,
-			order = recipe_order[item_name].."[b]",
+			order = DBL.recipe_order[item_name].."[b]",
 			enabled = false,
 			allow_decomposition = false,
 			ingredients = { {string.format("deadlock-stack-%s", item_name), DBL.RECIPE_MULTIPLIER} },

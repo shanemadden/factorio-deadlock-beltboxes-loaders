@@ -1,7 +1,14 @@
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
 local DBL = require("prototypes.shared")
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
 
 -- table for main public interface
 deadlock = {}
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
 function deadlock.add_tier(tier_table)
 	-- {
 	--  transport_belt      = string, -- mandatory, used for speed etc
@@ -121,6 +128,8 @@ function deadlock.add_tier(tier_table)
 	end
 end
 
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
 -- return the effective stack density of an item, exposed publicly for other mods if they need in recipes etc
 function deadlock.get_item_stack_density(item_name, item_type)
 	-- This depends on two things - the stack size startup setting (defaulting to 5)
@@ -134,6 +143,8 @@ function deadlock.get_item_stack_density(item_name, item_type)
 	return stack_size
 end
 
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
 local allowed_item_types = {
 	["item"] = true,
 	["ammo"] = true,
@@ -145,6 +156,7 @@ local allowed_item_types = {
 	["item-with-tags"] = true,
 	["capsule"] = true,
 }
+
 function deadlock.add_stack(item_name, graphic_path, target_tech, icon_size, item_type)
 	-- item_name    -- required, item to stack
 	-- graphic_path -- recommended, path to icon to use for dynamic icon generation
@@ -182,15 +194,112 @@ function deadlock.add_stack(item_name, graphic_path, target_tech, icon_size, ite
 		end
 	end
 end
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
 function deadlock.deferred_stacked_item_updates()
 	DBL.deferred_stacked_item_updates()
 end
 
--- table for legacy public DCL interface
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local function product_prototype_uses_item(proto, item)
+	for _,p in pairs(proto) do
+		if p.name and p.name == item then return true
+		elseif p[1] == item then return true end
+	end
+	return false
+end
+
+local function uses_item_as_ingredient(recipe, item)
+	if recipe.ingredients and product_prototype_uses_item(recipe.ingredients, item) then return true end
+	if recipe.normal and recipe.normal.ingredients and product_prototype_uses_item(recipe.normal.ingredients, item) then return true end
+	if recipe.expensive and recipe.expensive.ingredients and product_prototype_uses_item(recipe.expensive.ingredients, item) then return true end
+	return false
+end
+
+local function uses_item_as_result(recipe, item)
+	if recipe.result == item then return true end
+	if recipe.normal and recipe.normal.result == item then return true end
+	if recipe.expensive and recipe.expensive.result == item then return true end
+	if recipe.results and product_prototype_uses_item(recipe.results, item) then return true end
+	if recipe.normal and recipe.normal.results and product_prototype_uses_item(recipe.normal.results, item) then return true end
+	if recipe.expensive and recipe.expensive.results and product_prototype_uses_item(recipe.expensive.results, item) then return true end
+	return false
+end
+
+local function is_value_in_table(t, value)
+	if not t or not value then return false end
+	for k,v in pairs(t) do
+		if value == v then return true end
+	end 
+	return false
+end
+
+-- destroy_stack() - removes a stacked item and any recipe/tech references to it
+-- item_name    -- required, the base item name
+function deadlock.destroy_stack(base_item_name)
+	local item_name = "deadlock-stack-"..base_item_name
+	local stack_recipe_name = "deadlock-stacks-stack-"..base_item_name
+	local unstack_recipe_name = "deadlock-stacks-unstack-"..base_item_name
+	local item_name = "deadlock-stack-"..base_item_name
+	-- remove the item
+	if data.raw.item[item_name] then
+		DBL.debug("Removed item "..item_name)
+		data.raw.item[item_name] = nil
+	end
+	-- remove all recipes that use stacks as either ingredient or result
+	-- we don't only target stack and unstack recipes because other mods may have used stacks as ingredients by now
+	-- keep a list of which recipes got removed, so we can search tech unlocks
+	local dead_recipes = {}
+	for _,recipe in pairs(data.raw.recipe) do
+		if uses_item_as_ingredient(recipe, item_name) or uses_item_as_result(recipe, item_name) then
+			DBL.debug("Removed recipe "..recipe.name)
+			data.raw.recipe[recipe.name] = nil
+			table.insert(dead_recipes, recipe.name)
+		end
+	end
+	-- remove all the removed recipe tech unlocks
+	for _,tech in pairs(data.raw.technology) do
+		if tech.effects then
+			local temp = {}
+			local found = false
+			for _,effect in pairs(tech.effects) do
+				if effect.type ~= "unlock-recipe" or not is_value_in_table(dead_recipes, effect.recipe) then
+					table.insert(temp,effect)
+				else found = true end
+			end
+			if found then DBL.debug("Removed unlocks from "..tech.name) end
+			tech.effects = table.deepcopy(temp)
+		end
+	end
+	-- remove item order
+	DBL.item_order[base_item_name] = nil
+	DBL.recipe_order[base_item_name] = nil
+end
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- deadlock.destroy_vanilla_stacks()
+-- This is the same as calling destroy_crate() on every vanilla item the mod creates by default
+function deadlock.destroy_vanilla_stacks()
+	for tier,items in ipairs(DBL.VANILLA_ITEMS) do
+		for _,item in pairs(items) do
+			deadlock.destroy_stack(item)
+		end
+	end
+end
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- tables for legacy interfaces from early 0.16 versions
 deadlock_loaders = {}
+deadlock_stacking = {}
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
 
 function deadlock_loaders.create(tier_table)
-	DBL.debug("Legacy DCL API call, translating to add_tier call")
+	DBL.log_warning("deadlock_loaders.create() - this function is deprecated, consider using deadlock.add_tier() instead")
 	if not tier_table then
 		DBL.log_error("Nothing passed, a table is required")
 		return
@@ -216,12 +325,18 @@ function deadlock_loaders.create(tier_table)
 	deadlock.add_tier(tier_table)
 end
 
--- table for legacy public DSB interface
-deadlock_stacking = {}
+function deadlock_stacking.create(item_name, graphic_path, target_tech, icon_size)
+	DBL.log_warning("deadlock_stacking.create() - this function is deprecated, consider using deadlock.add_stack() instead")
+	deadlock.add_stack(item_name, graphic_path, target_tech, icon_size)
+end
 
-deadlock_stacking.create = deadlock.add_stack
-deadlock_stacking.create_stack = deadlock.add_stack
+function deadlock_stacking.create_stack(item_name, graphic_path, target_tech, icon_size)
+	DBL.log_warning("deadlock_stacking.create_stack() - this function is deprecated, consider using deadlock.add_stack() instead")
+	deadlock.add_stack(item_name, graphic_path, target_tech, icon_size)
+end
+
 function deadlock_stacking.reset()
+	DBL.log_warning("deadlock_stacking.reset() - this function is deprecated, consider using deadlock.destroy_vanilla_stacks() instead")
 	for tech_name, technology in pairs(DBL.BELTBOX_TECHS) do
 		-- iterate in reverse, clear all stack items but leave beltboxes
 		for i = #technology.effects, 1, -1 do
@@ -234,6 +349,7 @@ function deadlock_stacking.reset()
 end
 
 function deadlock_stacking.remove(target_tech)
+	DBL.log_warning("deadlock_stacking.remove() - this function is deprecated, consider using deadlock.destroy_stack() instead")
 	for tech_name, technology in pairs(DBL.BELTBOX_TECHS) do
 		-- iterate in reverse, clear all matching items
 		for i = #technology.effects, 1, -1 do
@@ -244,3 +360,6 @@ function deadlock_stacking.remove(target_tech)
 		end
 	end
 end
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
