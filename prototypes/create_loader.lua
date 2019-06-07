@@ -34,10 +34,11 @@ local function create_loader_entity(tier_table)
 	entity.name = tier_table.loader
 	entity.localised_description = {"entity-description.deadlock-loader"}
 	entity.icons = {
-		{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/loader-icon-base-64.png" },
-		{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/loader-icon-mask-64.png", tint = tier_table.colour },
+		{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/mipmaps/loader-icon-base.png" },
+		{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/mipmaps/loader-icon-mask.png", tint = tier_table.colour },
 	}
 	entity.icon_size = 64
+	entity.icon_mipmaps = 4
 	entity.flags = {"placeable-neutral", "player-creation", "fast-replaceable-no-build-while-moving"}
 	entity.vehicle_impact_sound = { filename = "__base__/sound/car-metal-impact.ogg", volume = 1.0 }
 	entity.open_sound = { filename = "__base__/sound/wooden-chest-open.ogg", volume = 1.0 }
@@ -218,10 +219,11 @@ local function create_loader_item(tier_table)
 		name = tier_table.loader_item or tier_table.loader,
 		localised_description = {"entity-description.deadlock-loader"},
 		icons = {
-			{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/loader-icon-base-64.png" },
-			{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/loader-icon-mask-64.png", tint = tier_table.colour },
+			{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/mipmaps/loader-icon-base.png" },
+			{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/mipmaps/loader-icon-mask.png", tint = tier_table.colour },
 		},
 		icon_size = 64,
+		icon_mipmaps = 4,
 		stack_size = 50,
 		flags = {},
 		place_result = tier_table.loader,
