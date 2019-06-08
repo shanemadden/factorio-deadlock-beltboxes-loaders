@@ -157,12 +157,13 @@ local allowed_item_types = {
 	["capsule"] = true,
 }
 
-function deadlock.add_stack(item_name, graphic_path, target_tech, icon_size, item_type)
-	-- item_name    -- required, item to stack
-	-- graphic_path -- recommended, path to icon to use for dynamic icon generation
-	-- target_tech  -- optional, the tech to unlock this stacking recipe with, often deadlock-stacking-[1-3] (if not provided, you must unlock in a tech in your own mod)
-	-- icon_size    -- optional, defaults to 64
-	-- item_type    -- optional, defaults to "item"
+function deadlock.add_stack(item_name, graphic_path, target_tech, icon_size, item_type, mipmap_levels)
+	-- item_name    	-- required, item to stack
+	-- graphic_path 	-- recommended, path to icon to use for dynamic icon generation
+	-- target_tech  	-- optional, the tech to unlock this stacking recipe with, often deadlock-stacking-[1-3] (if not provided, you must unlock in a tech in your own mod)
+	-- icon_size    	-- optional, defaults to 64
+	-- item_type    	-- optional, defaults to "item"
+	-- mipmap_levels	-- optional, defaults to nil, only ever used if graphic_path is also provided
 
 	---- validation ----
 	DBL.debug("Beginning data validation for new stacked item")
@@ -187,8 +188,8 @@ function deadlock.add_stack(item_name, graphic_path, target_tech, icon_size, ite
 	DBL.debug(string.format("Data validation completed for stacked item %s", item_name))
 	if settings.startup["deadlock-enable-beltboxes"].value then
 		local stack_size = deadlock.get_item_stack_density(item_name, item_type)
-		DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size, stack_size)
-		DBL.create_stacking_recipes(item_name, item_type, icon_size, stack_size)
+		DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size, stack_size, mipmap_levels)
+		DBL.create_stacking_recipes(item_name, item_type, stack_size)
 		if target_tech then
 			DBL.add_stacks_to_tech(item_name, target_tech)
 		end

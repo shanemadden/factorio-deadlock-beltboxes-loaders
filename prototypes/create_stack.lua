@@ -8,26 +8,27 @@ local function get_group(item, item_type)
 	return g
 end
 
-local function get_mipmap_level(size)
-	return math.max(math.log(size,2)-2, 1) -- 64 -> 4, 32 -> 3, 16 -> 2, 8 -> 1
-end
-
 local items_to_update = {}
-function DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size, stack_size)
+function DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size, stack_size, mipmap_levels)
 	DBL.debug(string.format("Creating stacked item: %s", item_name))
 	local temp_icons, stacked_icons --, this_fuel_category, this_fuel_acceleration_multiplier, this_fuel_top_speed_multiplier, this_fuel_value, this_fuel_emissions_multiplier
 	if graphic_path then
-		stacked_icons = { { icon = graphic_path, icon_size = icon_size, icon_mipmaps = get_mipmap_level(icon_size) } }
+		stacked_icons = { { icon = graphic_path, icon_size = icon_size, icon_mipmaps = mipmap_levels } }
 	else
-		if data.raw[item_type][item_name].icon then
-			temp_icons = { { icon = data.raw[item_type][item_name].icon, icon_size = data.raw[item_type][item_name].icon_size, icon_mipmaps = data.raw[item_type][item_name].icon_mipmaps } }
-		elseif data.raw[item_type][item_name].icons then
-			temp_icons = table.deepcopy(data.raw[item_type][item_name].icons)
+		local base_item = data.raw[item_type][item_name]
+		if base_item.icon then
+			if not base_item.icon_size then
+				DBL.log_error(string.format("Can't create layered icon for item (%s), base item defines icon but no icon_size", item_name))
+				return
+			end
+			temp_icons = { { icon = base_item.icon, icon_size = base_item.icon_size, icon_mipmaps = base_item.icon_mipmaps } }
+		elseif base_item.icons then
+			temp_icons = table.deepcopy(base_item.icons)
 		else
 			DBL.log_error(string.format("Can't create stacks for item with no icon properties (%s)", item_name))
 			return
 		end
-		DBL.log_warning(string.format("creating layered stack icon (%s), this is %dx more rendering effort than a custom stack icon and NOT ADVISED!", item_name, 1+(#temp_icons*3)))
+		DBL.log_warning(string.format("creating layered stack icon (%s), this is %dx more rendering effort than a custom icon!", item_name, 1+(#temp_icons*3)))
 		stacked_icons = { { icon = "__deadlock-beltboxes-loaders__/graphics/icons/blank.png", scale = 1, icon_size = 32 } }
 		for i = 1, -1, -1 do
 			for _,layer in pairs(temp_icons) do
@@ -43,7 +44,6 @@ function DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size, 
 			name = string.format("deadlock-stack-%s", item_name),
 			localised_name = {"item-name.deadlock-stacking-stack", {"item-name."..item_name}, stack_size},
 			icons = stacked_icons,
-			--icon_size = icon_size,
 			stack_size = math.floor(data.raw[item_type][item_name].stack_size/stack_size),
 			flags = {},
 			subgroup = string.format("stacks-%s", get_group(item_name, item_type)),
@@ -82,22 +82,22 @@ function DBL.deferred_stacked_item_updates()
 end
 
 -- make stacking/unstacking recipes for a base item
-function DBL.create_stacking_recipes(item_name, item_type, icon_size, stack_size)
+-- Deadlock 8.6.19: no need to pass icon parameters, can be extracted from item
+function DBL.create_stacking_recipes(item_name, item_type, stack_size)
 	DBL.debug(string.format("Creating recipes: %s", item_name))
-	local base_icon = data.raw.item[string.format("deadlock-stack-%s", item_name)].icon
+	local base_item = data.raw.item[string.format("deadlock-stack-%s", item_name)]
 	local base_icons = data.raw.item[string.format("deadlock-stack-%s", item_name)].icons
 	if not base_icons then
-		base_icons = { { icon = base_icon, icon_size = icon_size, icon_mipmaps = get_mipmap_level(icon_size) } }
+		base_icons = { { icon = base_item.icon, icon_size = base_item.icon_size, icon_mipmaps = base_item.icon_mipmaps } }
 	end
 	local stack_speed_modifier = stack_size / DBL.STACK_SIZE
 	-- stacking
 	local stack_icons = table.deepcopy(base_icons)
 	table.insert(stack_icons, 
 		{
-			icon = "__deadlock-beltboxes-loaders__/graphics/icons/mipmaps/stacking-arrow-d.png",
-			scale = 0.5 * 32 / icon_size,
-			icon_size = icon_size,
-			icon_mipmaps = get_mipmap_level(icon_size),
+			icon = "__deadlock-beltboxes-loaders__/graphics/icons/square/arrow-d-64.png",
+			scale = 0.25,
+			icon_size = 64,
 		}
 	)
 	data:extend({
@@ -116,7 +116,6 @@ function DBL.create_stacking_recipes(item_name, item_type, icon_size, stack_size
 			result_count = DBL.RECIPE_MULTIPLIER,
 			energy_required = DBL.CRAFT_TIME * DBL.RECIPE_MULTIPLIER * stack_speed_modifier,
 			icons = stack_icons,
-			--icon_size = icon_size, 
 			hidden = true,
 			allow_as_intermediate = false,
 			hide_from_stats = true,
@@ -126,10 +125,9 @@ function DBL.create_stacking_recipes(item_name, item_type, icon_size, stack_size
 	local unstack_icons = table.deepcopy(base_icons)
 	table.insert(unstack_icons, 
 		{
-			icon = "__deadlock-beltboxes-loaders__/graphics/icons/mipmaps/stacking-arrow-u.png",
-			scale = 0.5 * 32 / icon_size,
-			icon_size = icon_size,
-			icon_mipmaps = get_mipmap_level(icon_size),
+			icon = "__deadlock-beltboxes-loaders__/graphics/icons/square/arrow-u-64.png",
+			scale = 0.25,
+			icon_size = 64,
 		}
 	)
 	data:extend({
@@ -148,7 +146,6 @@ function DBL.create_stacking_recipes(item_name, item_type, icon_size, stack_size
 			result_count = stack_size * DBL.RECIPE_MULTIPLIER,
 			energy_required = DBL.CRAFT_TIME * DBL.RECIPE_MULTIPLIER * stack_speed_modifier,
 			icons = unstack_icons,
-			icon_size = icon_size,
 			hidden = settings.startup["deadlock-stacking-hide-unstacking"].value,
 			allow_as_intermediate = false,
 			hide_from_stats = true,
