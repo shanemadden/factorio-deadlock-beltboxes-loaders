@@ -173,6 +173,14 @@ mods. The general tendency is for things to happen later and later as mods try
 to catch and/or prevent each other’s changes. There isn’t really much we can do
 about that.
 
+**Automatic icons.** When using add_stack(), if you specify the icon path and icon size as nil,
+then DSB will create a triple-layered icon from the base item's icon automatically. There are two
+issues with doing this: it won't necessarily look very good, and it is bad for rendering
+performance. Remember that thousands of these items can be on the screen at once. Rendering
+performance will be taxed by a minimum of 4x the rendering effort if you used stacked icons, more
+if the base item itself already has layers. Try and supply your own stacked item icons wherever possible,
+or people trying to use your mod on a low-spec GPU may suffer for it.
+
 **Tech/migration.** If you add stacks to DSB technologies and then change them later, or
 remove anything that they provide, **you are responsible for your own
 migrations**. See DSB’s migrations folders for an example.
