@@ -1,4 +1,17 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.2.0
+Date: 08. 06. 2019
+  Changes:
+    - Thanks to Linver for adding an Italian translation.
+  API:
+    - NEW: deadlock.destroy_stack(). This deletes the stacked version of an item, all recipes which use it, and all tech unlocks for those recipes. 
+    - NEW: deadlock.destroy_vanilla_stacks(). This deletes all the vanilla stacked items and all references to them.
+    - deadlock.add_stack() now has an optional extra parameter for specifying mipmap level - this is only ever used if you supply your own icon for the stack.
+    - Added warnings in the standard log when deprecated legacy functions are used and a hint to use an alternative.
+    - Moved vanilla items-per-tier lists into shared data.
+    - Moved item/recipe order meta-tables into shared data.
+    - Moved player hand unstacking call out of shared data and into data-final-fixes (to prevent repetitions).
+---------------------------------------------------------------------------------------------------
 Version: 2.1.13
 Date: 02. 06. 2019
   Changes:

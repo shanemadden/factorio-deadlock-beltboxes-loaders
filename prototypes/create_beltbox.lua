@@ -13,10 +13,11 @@ local function create_beltbox_entity(tier_table)
 		name = tier_table.beltbox,
 		localised_description = {"entity-description.deadlock-beltbox"},
 		icons = {
-			{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/beltbox-icon-base-64.png" },
-			{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/beltbox-icon-mask-64.png", tint = tier_table.colour },
+			{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/mipmaps/beltbox-icon-base.png" },
+			{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/mipmaps/beltbox-icon-mask.png", tint = tier_table.colour },
 		},
 		icon_size = 64,
+		icon_mipmaps = 4,
 		flags = { "placeable-neutral", "placeable-player", "player-creation" },
 		animation = {
 			layers = {
@@ -178,10 +179,11 @@ local function create_beltbox_item(tier_table)
 		name = tier_table.beltbox_item or tier_table.beltbox,
 		localised_description = {"entity-description.deadlock-beltbox"},
 		icons = {
-			{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/beltbox-icon-base-64.png" },
-			{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/beltbox-icon-mask-64.png", tint = tier_table.colour },
+			{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/mipmaps/beltbox-icon-base.png" },
+			{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/mipmaps/beltbox-icon-mask.png", tint = tier_table.colour },
 		},
 		icon_size = 64,
+		icon_mipmaps = 4,
 		stack_size = 50,
 		flags = {},
 		place_result = tier_table.beltbox,
@@ -221,8 +223,8 @@ local function create_beltbox_technology(tier_table)
 		}
 	}
 	tech.icons = {
-		{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/beltbox-icon-base-128.png" },
-		{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/beltbox-icon-mask-128.png", tint = tier_table.colour },
+		{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/square/beltbox-icon-base-128.png" },
+		{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/square/beltbox-icon-mask-128.png", tint = tier_table.colour },
 	}
 	tech.name = tier_table.beltbox_technology
 	tech.unit.count = tech.unit.count * 1.5
