@@ -59,7 +59,7 @@ deadlock.add_stack()
 ----------------------------
 
 This is the function used to crate things that DSB doesn’t handle by default. It
-can take up to six parameters. A call looks like this:
+can take up to six parameters. A full call looks like this:
 **deadlock.add_stack(item_name, graphic_path, target_tech, icon_size, item_type, mipmap_levels)**
 
 | **Parameter**    | **Optional / Mandatory?** | **Explanation**                                                                                                                                                                                                                                                                                                     |
@@ -70,6 +70,8 @@ can take up to six parameters. A call looks like this:
 | **icon_size**    | Optional                  | Integer. The size of your custom icon in pixels. Defaults to 64. Not used if no icon is supplied.                                                                                                                                                                                                                                                          |
 | **item_type**    | Optional                  | String. The type of item, e.g. "item", "ammo", "repair-tool" etc. Defaults to "item".                                                                                                                                                                                                                                                           |
 | **mipmap_levels**| Optional                  | Integer. The mipmap levels of your custom icon. Defaults to nil. Not used if no icon is supplied.                                                                                                                                                                                                                                                            |
+
+You can omit an optional parameter or specify nil to use the defaults.
 
 Note that if you specify an item which has already been stacked, you may get unwanted results.
 Consider using destroy_stack(), described below, to remove the item before you overwrite
