@@ -181,7 +181,9 @@ issues with doing this: it won't necessarily look very good, and it is bad for r
 performance. Remember that thousands of these items can be on the screen at once. Rendering
 performance will be taxed by a minimum of 4x the rendering effort if you used stacked icons, more
 if the base item itself already has layers. Try and supply your own stacked item icons wherever possible,
-or people trying to use your mod on a low-spec GPU may suffer for it.
+or people trying to use your mod on a low-spec GPU may suffer for it. The feature is only
+included for legacy mod support: the standard game log will be spammed with warnings when
+layered icons are created.
 
 **Tech/migration.** If you add stacks to DSB technologies and then change them later, or
 remove anything that they provide, **you are responsible for your own
