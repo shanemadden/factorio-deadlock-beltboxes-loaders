@@ -195,7 +195,7 @@ cases, the loading process will halt with an error message. **Please read it.**
 In other cases, you can specify things that would allow the game to load but
 just don’t make much sense. In those cases, the game will continue to load but
 the function call may be skipped and an error or warning will be printed in the
-default game log. So if your crates or machines are missing, check the log.
+default game log. So if your stacked items or beltboxes are missing, check the log.
 
 **“Helper” or “bridge” mods.** If your favourite modder doesn’t want to / have
 time to provide support for stacking/crating, you could make your own mini
@@ -211,4 +211,4 @@ Provide any error messages and show your code – we can’t guess from a vague
 description.
 
 This mod was originally authored by Deadlock989. It was ported to 0.17 and is
-maintained by shanemadden with contributions from Deadlock989.
+now maintained by shanemadden with contributions from Deadlock989.
