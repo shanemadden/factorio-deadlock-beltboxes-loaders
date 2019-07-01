@@ -119,7 +119,6 @@ local function on_built_entity(event)
 		local belt_end = get_neighbour_entities(loader, belt_side_direction)
 		local loading_end = get_neighbour_entities(loader, opposite[belt_side_direction])
 
-		-- note: loader mode won't change when snapped to inventory
 		if snap2belt and are_belt_facing(belt_end, loader.direction) then
 			-- belt on belt side, same direction
 		elseif snap2belt and are_belt_facing(belt_end, opposite[loader.direction]) then
@@ -127,9 +126,15 @@ local function on_built_entity(event)
 			loader.rotate( {by_player = event.player_index} )
 		elseif snap2inv and are_loadable(loading_end) then
 			-- inventory on loading side
+			if are_belt_facing(belt_end, opposite[loader.direction]) then	
+				loader.rotate( {by_player = event.player_index} )
+			end
 		elseif snap2inv and are_loadable(belt_end) then
 			-- inventory on belt side
 			loader.direction = opposite[loader.direction]
+			if are_belt_facing(loading_end, opposite[loader.direction]) then	
+				loader.rotate( {by_player = event.player_index} )
+			end
 		elseif snap2belt and are_belt_facing(loading_end, loader.direction) then
 			-- belt on loading on belt side, same direction
 			loader.direction = opposite[loader.direction]
@@ -160,8 +165,6 @@ local function on_built_entity(event)
 				local belt_end = get_the_neighbour(loader, built, belt_side_direction)
 				local loading_end = get_the_neighbour(loader, built, opposite[belt_side_direction])
 
-				-- note: loader mode won't change when snapped to inventory
-
 				if snap2belt and are_belt_facing(belt_end, loader.direction) then
 					-- belt on belt side, same direction
 				elseif snap2belt and are_belt_facing(belt_end, opposite[loader.direction]) then
@@ -169,9 +172,18 @@ local function on_built_entity(event)
 					loader.rotate( {by_player = event.player_index} )
 				elseif snap2inv and are_loadable(loading_end) then
 					-- inventory on loading side
+					belt_end = get_neighbour_entities(loader, belt_side_direction)
+					if are_belt_facing(belt_end, opposite[loader.direction]) then	
+						loader.rotate( {by_player = event.player_index} )
+					end
 				elseif snap2inv and are_loadable(belt_end) then
 					-- inventory on belt side
 					loader.direction = opposite[loader.direction]
+
+					loading_end = get_neighbour_entities(loader, opposite[belt_side_direction])
+					if are_belt_facing(loading_end, opposite[loader.direction]) then
+						loader.rotate( {by_player = event.player_index} )
+					end
 				elseif snap2belt and are_belt_facing(loading_end, loader.direction) then
 					-- belt on loading on belt side, same direction
 					loader.direction = opposite[loader.direction]
