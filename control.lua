@@ -118,34 +118,45 @@ end
 script.on_event(defines.events.on_built_entity, on_built_entity)
 
 -- auto-unstacking by ownlyme
-local function on_picked_up_item(event)
-	if string.sub(event.item_stack.name, 1, 15) == "deadlock-stack-" then
+local function auto_unstack(player_index, item_name, item_count)
+	if string.sub(item_name, 1, 15) == "deadlock-stack-" then
 		-- attempt to auto-unstack
-		local player = game.players[event.player_index]
+		local player = game.players[player_index]
 		-- remove a stack
 		player.remove_item({
-			name = event.item_stack.name,
-			count = 1,
+			name = item_name,
+			count = item_count,
 		})
 		-- try to add a stack worth of the source item to the inventory
 		local add_count = STACK_SIZE
 		-- if the base item's stack size is lower than the configured STACK_SIZE then
 		-- this should reward the lower of the two
-		local prototype = game.item_prototypes[string.sub(event.item_stack.name, 16)]
+		local prototype = game.item_prototypes[string.sub(item_name, 16)]
 		if STACK_SIZE > prototype.stack_size then
 			add_count = prototype.stack_size
 		end
 		local inserted = player.insert({
-			name = string.sub(event.item_stack.name, 16),
-			count = add_count,
+			name = string.sub(item_name, 16),
+			count = add_count * item_count,
 		})
 		if inserted == 0 then
 			-- the item couldn't insert for whatever reason, put the stacked version back
 			player.insert({
-				name = event.item_stack.name,
-				count = 1,
+				name = item_name,
+				count = item_count,
 			})
 		end
+	end
+end
+local function on_picked_up_item(event)
+	auto_unstack(event.player_index, event.item_stack.name, 1)
+end
+local function on_player_mined_entity(event)
+	for item_name, item_count in pairs(event.buffer.get_contents()) do
+		-- add items to player inventory
+		auto_unstack(event.player_index, item_name, item_count)
+		-- remove the still stacked item from the buffer
+		event.buffer.remove({name=item_name, count = item_count})
 	end
 end
 
@@ -153,6 +164,8 @@ end
 local function on_load(event)
 	if settings.startup["deadlock-stacking-auto-unstack"].value then
 		script.on_event(defines.events.on_picked_up_item, on_picked_up_item)
+		script.on_event(defines.events.on_player_mined_item, on_picked_up_item)
+		script.on_event(defines.events.on_player_mined_entity, on_player_mined_entity)
 	else
 		script.on_event(defines.events.on_picked_up_item, nil)
 	end
