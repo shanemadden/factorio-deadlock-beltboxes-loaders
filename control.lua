@@ -118,15 +118,13 @@ end
 script.on_event(defines.events.on_built_entity, on_built_entity)
 
 -- auto-unstacking by ownlyme
-local function auto_unstack(player_index, item_name, item_count)
+local function auto_unstack(item_name, item_count, sending_inventory, receiving_inventory)
+	-- item_name: The name of the stacked item which should be unstacked
+	-- item_count: The number of items that should be unstacked
+	-- sending_inventory: the inventory that contains the stacked item
+	-- receiving_inventory: the inventory that receives the unstacked items
 	if string.sub(item_name, 1, 15) == "deadlock-stack-" then
 		-- attempt to auto-unstack
-		local player = game.players[player_index]
-		-- remove a stack
-		player.remove_item({
-			name = item_name,
-			count = item_count,
-		})
 		-- try to add a stack worth of the source item to the inventory
 		local add_count = STACK_SIZE
 		-- if the base item's stack size is lower than the configured STACK_SIZE then
@@ -135,28 +133,39 @@ local function auto_unstack(player_index, item_name, item_count)
 		if STACK_SIZE > prototype.stack_size then
 			add_count = prototype.stack_size
 		end
-		local inserted = player.insert({
+		local inserted = receiving_inventory.insert({
 			name = string.sub(item_name, 16),
 			count = add_count * item_count,
 		})
-		if inserted == 0 then
-			-- the item couldn't insert for whatever reason, put the stacked version back
-			player.insert({
+		
+		partial_inserted = inserted % add_count 
+		-- if player inventory is nearly full it may happen that just 8 items are inserted with add_count==5
+		-- partial inserted then will be 3
+		if partial_inserted > 0 then
+			receiving_inventory.remove({
+				name = string.sub(item_name, 16),
+				count = partial_inserted,
+			})
+		end
+		-- now remove the inserted items in their stacked variant. With the example above this is 1 stacked item
+		full_stack_inserted = math.floor(inserted / add_count)
+		if full_stack_inserted > 0 then
+			sending_inventory.remove({
 				name = item_name,
-				count = item_count,
+				count = full_stack_inserted,
 			})
 		end
 	end
 end
 local function on_picked_up_item(event)
-	auto_unstack(event.player_index, event.item_stack.name, 1)
+	player_inventory = game.players[event.player_index].get_main_inventory()
+	
+	auto_unstack(event.item_stack.name, event.item_stack.count, player_inventory, player_inventory)
 end
 local function on_player_mined_entity(event)
+	player_inventory = game.players[event.player_index].get_main_inventory()
 	for item_name, item_count in pairs(event.buffer.get_contents()) do
-		-- add items to player inventory
-		auto_unstack(event.player_index, item_name, item_count)
-		-- remove the still stacked item from the buffer
-		event.buffer.remove({name=item_name, count = item_count})
+		auto_unstack(item_name, item_count, event.buffer, player_inventory)
 	end
 end
 
