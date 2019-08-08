@@ -157,24 +157,51 @@ local function auto_unstack(item_name, item_count, sending_inventory, receiving_
 		end
 	end
 end
-local function on_picked_up_item(event)
+local function map(func, tbl)
+    local newtbl = {}
+    for i,v in ipairs(tbl) do
+        newtbl[i] = func(v)
+    end
+    return newtbl
+end
+local function on_pre_player_mined_item(event)
 	player_inventory = game.players[event.player_index].get_main_inventory()
-	
+	inventories_to_check = {
+		defines.inventory.chest, 
+		defines.inventory.furnace_source, 
+		defines.inventory.furnace_result,
+		defines.inventory.cargo_wagon,
+		defines.inventory.assembling_machine_input,
+		defines.inventory.assembling_machine_output,
+		defines.inventory.robot_cargo,
+		}
+	local function try_unstacking(define_inventory)
+		mined_entity_inventory = event.entity.get_inventory(define_inventory)
+		if mined_entity_inventory then
+			for item_name, item_count in pairs(mined_entity_inventory.get_contents()) do
+				auto_unstack(item_name, item_count, mined_entity_inventory, player_inventory)
+			end
+		end
+	end
+	map(try_unstacking, inventories_to_check)	
+end
+local function on_picked_up_item(event) 
+	player_inventory = game.players[event.player_index].get_main_inventory()
 	auto_unstack(event.item_stack.name, event.item_stack.count, player_inventory, player_inventory)
 end
-local function on_player_mined_entity(event)
+local function on_player_mined_entity(event) 
 	player_inventory = game.players[event.player_index].get_main_inventory()
 	for item_name, item_count in pairs(event.buffer.get_contents()) do
 		auto_unstack(item_name, item_count, event.buffer, player_inventory)
 	end
 end
-
 -- conditionally register based on the state of the setting so it's not costing any performance when disabled
 local function on_load(event)
 	if settings.startup["deadlock-stacking-auto-unstack"].value then
-		script.on_event(defines.events.on_picked_up_item, on_picked_up_item)
-		script.on_event(defines.events.on_player_mined_item, on_picked_up_item)
-		script.on_event(defines.events.on_player_mined_entity, on_player_mined_entity)
+		script.on_event(defines.events.on_picked_up_item, on_picked_up_item) -- works on items that are picked up with f key
+		script.on_event(defines.events.on_player_mined_item, on_picked_up_item) -- works on items which are directly mined from the ground
+		script.on_event(defines.events.on_player_mined_entity, on_player_mined_entity) -- works on mined belts that carry items
+		script.on_event(defines.events.on_pre_player_mined_item, on_pre_player_mined_item) -- works on mined entities with inventories that carry items
 	else
 		script.on_event(defines.events.on_picked_up_item, nil)
 	end
