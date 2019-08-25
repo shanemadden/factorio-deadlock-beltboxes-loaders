@@ -122,41 +122,90 @@ end
 script.on_event(defines.events.on_built_entity, on_built_entity)
 
 -- auto-unstacking by ownlyme
-local function on_picked_up_item(event)
-	if string.sub(event.item_stack.name, 1, 15) == "deadlock-stack-" then
+local function auto_unstack(item_name, item_count, sending_inventory, receiving_inventory)
+	-- item_name: The name of the stacked item which should be unstacked
+	-- item_count: The number of items that should be unstacked
+	-- sending_inventory: the inventory that contains the stacked item
+	-- receiving_inventory: the inventory that receives the unstacked items
+	if string.sub(item_name, 1, 15) == "deadlock-stack-" then
 		-- attempt to auto-unstack
-		local player = game.players[event.player_index]
-		-- remove a stack
-		player.remove_item({
-			name = event.item_stack.name,
-			count = 1,
-		})
 		-- try to add a stack worth of the source item to the inventory
 		local add_count = STACK_SIZE
 		-- if the base item's stack size is lower than the configured STACK_SIZE then
 		-- this should reward the lower of the two
-		local prototype = game.item_prototypes[string.sub(event.item_stack.name, 16)]
+		local prototype = game.item_prototypes[string.sub(item_name, 16)]
 		if STACK_SIZE > prototype.stack_size then
 			add_count = prototype.stack_size
 		end
-		local inserted = player.insert({
-			name = string.sub(event.item_stack.name, 16),
-			count = add_count,
+		local inserted = receiving_inventory.insert({
+			name = string.sub(item_name, 16),
+			count = add_count * item_count,
 		})
-		if inserted == 0 then
-			-- the item couldn't insert for whatever reason, put the stacked version back
-			player.insert({
-				name = event.item_stack.name,
-				count = 1,
+		
+		partial_inserted = inserted % add_count 
+		-- if player inventory is nearly full it may happen that just 8 items are inserted with add_count==5
+		-- partial inserted then will be 3
+		if partial_inserted > 0 then
+			receiving_inventory.remove({
+				name = string.sub(item_name, 16),
+				count = partial_inserted,
+			})
+		end
+		-- now remove the inserted items in their stacked variant. With the example above this is 1 stacked item
+		full_stack_inserted = math.floor(inserted / add_count)
+		if full_stack_inserted > 0 then
+			sending_inventory.remove({
+				name = item_name,
+				count = full_stack_inserted,
 			})
 		end
 	end
 end
-
+local function map(func, tbl)
+    local newtbl = {}
+    for i,v in ipairs(tbl) do
+        newtbl[i] = func(v)
+    end
+    return newtbl
+end
+local function on_pre_player_mined_item(event)
+	player_inventory = game.players[event.player_index].get_main_inventory()
+	inventories_to_check = {
+		defines.inventory.chest, 
+		defines.inventory.furnace_source, 
+		defines.inventory.furnace_result,
+		defines.inventory.cargo_wagon,
+		defines.inventory.assembling_machine_input,
+		defines.inventory.assembling_machine_output,
+		defines.inventory.robot_cargo,
+		}
+	local function try_unstacking(define_inventory)
+		mined_entity_inventory = event.entity.get_inventory(define_inventory)
+		if mined_entity_inventory then
+			for item_name, item_count in pairs(mined_entity_inventory.get_contents()) do
+				auto_unstack(item_name, item_count, mined_entity_inventory, player_inventory)
+			end
+		end
+	end
+	map(try_unstacking, inventories_to_check)	
+end
+local function on_picked_up_item(event) 
+	player_inventory = game.players[event.player_index].get_main_inventory()
+	auto_unstack(event.item_stack.name, event.item_stack.count, player_inventory, player_inventory)
+end
+local function on_player_mined_entity(event) 
+	player_inventory = game.players[event.player_index].get_main_inventory()
+	for item_name, item_count in pairs(event.buffer.get_contents()) do
+		auto_unstack(item_name, item_count, event.buffer, player_inventory)
+	end
+end
 -- conditionally register based on the state of the setting so it's not costing any performance when disabled
 local function on_load(event)
 	if settings.startup["deadlock-stacking-auto-unstack"].value then
-		script.on_event(defines.events.on_picked_up_item, on_picked_up_item)
+		script.on_event(defines.events.on_picked_up_item, on_picked_up_item) -- works on items that are picked up with f key
+		script.on_event(defines.events.on_player_mined_item, on_picked_up_item) -- works on items which are directly mined from the ground
+		script.on_event(defines.events.on_player_mined_entity, on_player_mined_entity) -- works on mined belts that carry items
+		script.on_event(defines.events.on_pre_player_mined_item, on_pre_player_mined_item) -- works on mined entities with inventories that carry items
 	else
 		script.on_event(defines.events.on_picked_up_item, nil)
 	end
