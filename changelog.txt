@@ -1,5 +1,12 @@
 ---------------------------------------------------------------------------------------------------
 Version: 2.2.0
+Date: 25. 08. 2019
+  Changes:
+    - Improves loader snapping for adjacent loaders and inventory snapping belt hints - thanks to meonester on GitHub
+    - When auto-unstacking is enabled, automatically unstack items gained via mining an entity - thanks to Doublespin on GitHub
+    - Add stack density options for more powers of 2 instead of 10; reminder to understand the maximum stack size implications of these settings; a stack size of 128 will drastically cut the amount of items that can be stored in a train or chest for items that stack to 200.
+---------------------------------------------------------------------------------------------------
+Version: 2.2.0
 Date: 08. 06. 2019
   Changes:
     - Thanks to Linver for adding an Italian translation.
