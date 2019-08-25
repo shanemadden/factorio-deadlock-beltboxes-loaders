@@ -161,33 +161,31 @@ local function auto_unstack(item_name, item_count, sending_inventory, receiving_
 		end
 	end
 end
-local function map(func, tbl)
-    local newtbl = {}
-    for i,v in ipairs(tbl) do
-        newtbl[i] = func(v)
-    end
-    return newtbl
-end
-local function on_pre_player_mined_item(event)
-	player_inventory = game.players[event.player_index].get_main_inventory()
-	inventories_to_check = {
-		defines.inventory.chest, 
-		defines.inventory.furnace_source, 
-		defines.inventory.furnace_result,
-		defines.inventory.cargo_wagon,
-		defines.inventory.assembling_machine_input,
-		defines.inventory.assembling_machine_output,
-		defines.inventory.robot_cargo,
-		}
-	local function try_unstacking(define_inventory)
-		mined_entity_inventory = event.entity.get_inventory(define_inventory)
-		if mined_entity_inventory then
-			for item_name, item_count in pairs(mined_entity_inventory.get_contents()) do
-				auto_unstack(item_name, item_count, mined_entity_inventory, player_inventory)
-			end
+
+local inventories_to_check = {
+	defines.inventory.chest, 
+	defines.inventory.furnace_source, 
+	defines.inventory.furnace_result,
+	defines.inventory.cargo_wagon,
+	defines.inventory.assembling_machine_input,
+	defines.inventory.assembling_machine_output,
+	defines.inventory.robot_cargo,
+}
+local function try_unstacking(entity, inventory_type, player_inventory)
+	mined_entity_inventory = entity.get_inventory(inventory_type)
+	if mined_entity_inventory then
+		for item_name, item_count in pairs(mined_entity_inventory.get_contents()) do
+			auto_unstack(item_name, item_count, mined_entity_inventory, player_inventory)
 		end
 	end
-	map(try_unstacking, inventories_to_check)	
+end
+
+local function on_pre_player_mined_item(event)
+	player_inventory = game.players[event.player_index].get_main_inventory()
+
+	for i, v in ipairs(inventories_to_check) do
+		try_unstacking(event.entity, v, player_inventory)
+	end
 end
 local function on_picked_up_item(event) 
 	player_inventory = game.players[event.player_index].get_main_inventory()
@@ -206,8 +204,6 @@ local function on_load(event)
 		script.on_event(defines.events.on_player_mined_item, on_picked_up_item) -- works on items which are directly mined from the ground
 		script.on_event(defines.events.on_player_mined_entity, on_player_mined_entity) -- works on mined belts that carry items
 		script.on_event(defines.events.on_pre_player_mined_item, on_pre_player_mined_item) -- works on mined entities with inventories that carry items
-	else
-		script.on_event(defines.events.on_picked_up_item, nil)
 	end
 end
 script.on_load(on_load)
