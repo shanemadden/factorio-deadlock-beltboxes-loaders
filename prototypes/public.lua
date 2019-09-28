@@ -137,8 +137,10 @@ function deadlock.get_item_stack_density(item_name, item_type)
 	-- For instance if a mod adds an item whose stacks only go to 5 but the startup setting
 	-- is for items to stack to 10, most items will be stacking to 10 but that specific item will only stack to 5
 	local stack_size = DBL.STACK_SIZE
-	if data.raw[item_type][item_name].stack_size < stack_size then
-		stack_size = data.raw[item_type][item_name].stack_size
+	if data.raw[item_type] and data.raw[item_type][item_name] then
+		if data.raw[item_type][item_name].stack_size < stack_size then
+			stack_size = data.raw[item_type][item_name].stack_size
+		end
 	end
 	return stack_size
 end
