@@ -8,6 +8,14 @@ local function get_group(item, item_type)
 	return g
 end
 
+local function get_localised_name(item_name)
+    if data.raw.item[item_name] and data.raw.item[item_name].localised_name then
+        return data.raw.item[item_name].localised_name
+    else
+        return {"item-name."..item_name}
+	end
+end
+
 local items_to_update = {}
 function DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size, stack_size, mipmap_levels)
 	DBL.debug(string.format("Creating stacked item: %s", item_name))
@@ -42,7 +50,7 @@ function DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size, 
 		{
 			type = "item",
 			name = string.format("deadlock-stack-%s", item_name),
-			localised_name = {"item-name.deadlock-stacking-stack", {"item-name."..item_name}, stack_size},
+			localised_name = {"item-name.deadlock-stacking-stack", get_localised_name(item_name), stack_size},
 			icons = stacked_icons,
 			stack_size = math.floor(data.raw[item_type][item_name].stack_size/stack_size),
 			flags = {},
@@ -65,7 +73,7 @@ function DBL.deferred_stacked_item_updates()
 		local stack_size = deadlock.get_item_stack_density(item_name, item_type)
 		data.raw.item[stacked_item_name].subgroup = string.format("stacks-%s", get_group(item_name, item_type))
 		data.raw.item[stacked_item_name].stack_size = math.floor(data.raw[item_type][item_name].stack_size/stack_size)
-		data.raw.item[stacked_item_name].localised_name = {"item-name.deadlock-stacking-stack", {"item-name."..item_name}, stack_size}
+		data.raw.item[stacked_item_name].localised_name = {"item-name.deadlock-stacking-stack", get_localised_name(item_name), stack_size}
 		-- warn when the current stack size causes a loss in inventory density for this item
 		if data.raw[item_type][item_name].stack_size % stack_size > 0 then
 			DBL.log_warning(string.format("Full stack density for %s is reduced to %d from source stack size %d, doesn't divide cleanly by %d", stacked_item_name, (data.raw.item[stacked_item_name].stack_size * stack_size), data.raw[item_type][item_name].stack_size, stack_size))
@@ -104,7 +112,7 @@ function DBL.create_stacking_recipes(item_name, item_type, stack_size)
 		{
 			type = "recipe",
 			name = string.format("deadlock-stacks-stack-%s", item_name),
-			localised_name = {"recipe-name.deadlock-stacking-stack", {"item-name."..item_name}},
+			localised_name = {"recipe-name.deadlock-stacking-stack", get_localised_name(item_name)},
 			category = "stacking",
 			group = "intermediate-products",
 			subgroup = data.raw.item[string.format("deadlock-stack-%s", item_name)].subgroup,
@@ -134,7 +142,7 @@ function DBL.create_stacking_recipes(item_name, item_type, stack_size)
 		{
 			type = "recipe",
 			name = string.format("deadlock-stacks-unstack-%s", item_name),
-			localised_name = {"recipe-name.deadlock-stacking-unstack", {"item-name."..item_name}},
+			localised_name = {"recipe-name.deadlock-stacking-unstack", get_localised_name(item_name)},
 			category = "unstacking",
 			group = "intermediate-products",
 			subgroup = data.raw.item[string.format("deadlock-stack-%s", item_name)].subgroup,
