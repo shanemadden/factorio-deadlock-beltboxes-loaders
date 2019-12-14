@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.2.3
+Date: 14. 12. 2019
+  Changes:
+    - Use an item's localised_name for stacked item name generation to match the underlying item if the locale file has been overridden for it
+---------------------------------------------------------------------------------------------------
 Version: 2.2.2
 Date: 28. 09. 2019
   Changes:

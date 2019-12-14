@@ -9,10 +9,10 @@ local function get_group(item, item_type)
 end
 
 local function get_localised_name(item_name)
-    if data.raw.item[item_name] and data.raw.item[item_name].localised_name then
-        return data.raw.item[item_name].localised_name
-    else
-        return {"item-name."..item_name}
+	if data.raw.item[item_name] and data.raw.item[item_name].localised_name then
+		return data.raw.item[item_name].localised_name
+	else
+		return {"item-name."..item_name}
 	end
 end
 
