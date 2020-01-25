@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.3.0
+Date: 25. 01. 2020
+  Changes:
+    - Support 0.18
+    - Loaders changed to use type = "loader-1x1"
+---------------------------------------------------------------------------------------------------
 Version: 2.2.3
 Date: 14. 12. 2019
   Changes:
@@ -21,7 +27,7 @@ Date: 08. 06. 2019
   Changes:
     - Thanks to Linver for adding an Italian translation.
   API:
-    - NEW: deadlock.destroy_stack(). This deletes the stacked version of an item, all recipes which use it, and all tech unlocks for those recipes. 
+    - NEW: deadlock.destroy_stack(). This deletes the stacked version of an item, all recipes which use it, and all tech unlocks for those recipes.
     - NEW: deadlock.destroy_vanilla_stacks(). This deletes all the vanilla stacked items and all references to them.
     - deadlock.add_stack() now has an optional extra parameter for specifying mipmap level - this is only ever used if you supply your own icon for the stack.
     - Added warnings in the standard log when deprecated legacy functions are used and a hint to use an alternative.
