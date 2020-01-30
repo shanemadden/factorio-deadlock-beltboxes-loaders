@@ -30,7 +30,7 @@ end
 
 local function create_loader_entity(tier_table)
 	local entity = {}
-	entity.type = "loader"
+	entity.type = "loader-1x1"
 	entity.name = tier_table.loader
 	entity.localised_description = {"entity-description.deadlock-loader"}
 	entity.icons = {
@@ -50,8 +50,8 @@ local function create_loader_entity(tier_table)
 	entity.minable = { hardness = 0.2, mining_time = 0.5, result = tier_table.loader_item or tier_table.loader }
 	entity.max_health = 170
 	entity.resistances = {{type = "fire", percent = 60 }}
-	entity.belt_distance = 0
-	entity.container_distance = 1.0
+	entity.belt_distance = 0.5
+	entity.container_distance = 1
 	entity.belt_length = 0.5
 	entity.filter_count = 5
 	entity.animation_speed_coefficient = 32
