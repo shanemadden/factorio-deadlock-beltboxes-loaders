@@ -62,7 +62,7 @@ local function are_belt_facing(entities, direction)
 		if (entity.type == "transport-belt" or
 			entity.type == "underground-belt" or
 			entity.type == "splitter" or
-			entity.type == "loader") and
+			entity.type == "loader-1x1") and
 			entity.direction == direction
 		then return true end
 	end
@@ -77,7 +77,7 @@ end
 local function on_built_entity(event)
 	local built = event.created_entity
 	-- invalid build or fake player build from pseudo-bot mods?
-	if not built or not built.valid or event.revived or built.type ~= "loader" or not created_loader[built.name] then
+	if not built or not built.valid or event.revived or built.type ~= "loader-1x1" or not created_loader[built.name] then
 		return
 	end
 	local snap2inv = settings.get_player_settings(game.players[event.player_index])["deadlock-loaders-snap-to-inventories"].value

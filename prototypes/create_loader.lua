@@ -51,9 +51,9 @@ local function create_loader_entity(tier_table)
     entity.minable = {hardness = 0.2, mining_time = 0.5, result = tier_table.loader_item or tier_table.loader}
     entity.max_health = 170
     entity.resistances = {{type = "fire", percent = 60}}
-    entity.belt_distance = 0
+    entity.belt_distance = 0.5
     entity.container_distance = 1 -- Was 1.0 .. Default: 1.5
-    entity.belt_length = 0.6 -- Was 0.5 .. Default: 0.5
+    entity.belt_length = 0.5 -- Was 0.5 .. Default: 0.5
     entity.filter_count = 5
     entity.animation_speed_coefficient = 32
     if settings.startup["deadlock-strict-fast-replace-loaders"].value then

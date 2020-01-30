@@ -5,7 +5,7 @@
     "author": "Deadlock989, Shane Madden",
     "homepage": "https://forums.factorio.com/viewtopic.php?f=94&t=57264",
     "dependencies": [
-        "base >= 0.18.00",
+        "base >= 0.18.3",
         "? ReStack"
     ],
     "description": "Adds minimalist 1x1 loaders and stacking beltboxes for 5x belt compression for ores, plates and some intermediate products",
