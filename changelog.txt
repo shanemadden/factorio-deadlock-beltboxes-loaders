@@ -2,7 +2,7 @@
 Version: 2.3.0
 Date: 25. 01. 2020
   Changes:
-    - Support 0.18
+    - Support 0.18 thanks to billbo99
     - Loaders changed to use type = "loader-1x1"
 ---------------------------------------------------------------------------------------------------
 Version: 2.2.3
