@@ -70,21 +70,25 @@ function DBL.deferred_stacked_item_updates()
 	for stacked_item_name, item_table in pairs(items_to_update) do
 		local item_name = item_table.item_name
 		local item_type = item_table.item_type
-		local stack_size = deadlock.get_item_stack_density(item_name, item_type)
-		data.raw.item[stacked_item_name].subgroup = string.format("stacks-%s", get_group(item_name, item_type))
-		data.raw.item[stacked_item_name].stack_size = math.floor(data.raw[item_type][item_name].stack_size/stack_size)
-		data.raw.item[stacked_item_name].localised_name = {"item-name.deadlock-stacking-stack", get_localised_name(item_name), stack_size}
-		-- warn when the current stack size causes a loss in inventory density for this item
-		if data.raw[item_type][item_name].stack_size % stack_size > 0 then
-			DBL.log_warning(string.format("Full stack density for %s is reduced to %d from source stack size %d, doesn't divide cleanly by %d", stacked_item_name, (data.raw.item[stacked_item_name].stack_size * stack_size), data.raw[item_type][item_name].stack_size, stack_size))
-		end
-		if data.raw[item_type][item_name].fuel_value then
-			data.raw.item[stacked_item_name].fuel_category = data.raw[item_type][item_name].fuel_category
-			data.raw.item[stacked_item_name].fuel_acceleration_multiplier = data.raw[item_type][item_name].fuel_acceleration_multiplier
-			data.raw.item[stacked_item_name].fuel_top_speed_multiplier = data.raw[item_type][item_name].fuel_top_speed_multiplier
-			data.raw.item[stacked_item_name].fuel_emissions_multiplier = data.raw[item_type][item_name].fuel_emissions_multiplier
-			-- great, the fuel value is a string, with SI units. how very easy to work with
-			data.raw.item[stacked_item_name].fuel_value = (tonumber(string.match(data.raw[item_type][item_name].fuel_value, "%d+")) * stack_size) .. string.match(data.raw[item_type][item_name].fuel_value, "%a+")
+		if data.raw[item_type][item_name] then
+			local stack_size = deadlock.get_item_stack_density(item_name, item_type)
+			data.raw.item[stacked_item_name].subgroup = string.format("stacks-%s", get_group(item_name, item_type))
+			data.raw.item[stacked_item_name].stack_size = math.floor(data.raw[item_type][item_name].stack_size/stack_size)
+			data.raw.item[stacked_item_name].localised_name = {"item-name.deadlock-stacking-stack", get_localised_name(item_name), stack_size}
+			-- warn when the current stack size causes a loss in inventory density for this item
+			if data.raw[item_type][item_name].stack_size % stack_size > 0 then
+				DBL.log_warning(string.format("Full stack density for %s is reduced to %d from source stack size %d, doesn't divide cleanly by %d", stacked_item_name, (data.raw.item[stacked_item_name].stack_size * stack_size), data.raw[item_type][item_name].stack_size, stack_size))
+			end
+			if data.raw[item_type][item_name].fuel_value then
+				data.raw.item[stacked_item_name].fuel_category = data.raw[item_type][item_name].fuel_category
+				data.raw.item[stacked_item_name].fuel_acceleration_multiplier = data.raw[item_type][item_name].fuel_acceleration_multiplier
+				data.raw.item[stacked_item_name].fuel_top_speed_multiplier = data.raw[item_type][item_name].fuel_top_speed_multiplier
+				data.raw.item[stacked_item_name].fuel_emissions_multiplier = data.raw[item_type][item_name].fuel_emissions_multiplier
+				-- great, the fuel value is a string, with SI units. how very easy to work with
+				data.raw.item[stacked_item_name].fuel_value = (tonumber(string.match(data.raw[item_type][item_name].fuel_value, "%d+")) * stack_size) .. string.match(data.raw[item_type][item_name].fuel_value, "%a+")
+			end
+		else
+			DBL.log_warning("Item \""..item_name.."\" appears to have been deleted since it was added to the deferred item updates list, skipping it.")
 		end
 	end
 end
