@@ -157,6 +157,7 @@ local allowed_item_types = {
 	["item-with-label"] = true,
 	["item-with-tags"] = true,
 	["capsule"] = true,
+	["rail-planner"] = true
 }
 
 function deadlock.add_stack(item_name, graphic_path, target_tech, icon_size, item_type, mipmap_levels)
