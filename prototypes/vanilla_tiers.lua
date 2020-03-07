@@ -18,8 +18,8 @@ deadlock.add_tier({
 	},
 	beltbox_technology  = "deadlock-stacking-1",
 })
-if data.raw.loader["transport-belt-loader"] then
-	data.raw.loader["transport-belt-loader"].next_upgrade = "fast-transport-belt-loader"
+if data.raw["loader-1x1"]["transport-belt-loader"] then
+	data.raw["loader-1x1"]["transport-belt-loader"].next_upgrade = "fast-transport-belt-loader"
 end
 if data.raw.furnace["transport-belt-beltbox"] then
 	data.raw.furnace["transport-belt-beltbox"].next_upgrade = "fast-transport-belt-beltbox"
@@ -48,8 +48,8 @@ deadlock.add_tier({
 if data.raw.technology["deadlock-stacking-2"] then
 	table.insert(data.raw.technology["deadlock-stacking-2"].prerequisites, "deadlock-stacking-1")
 end
-if data.raw.loader["fast-transport-belt-loader"] then
-	data.raw.loader["fast-transport-belt-loader"].next_upgrade = "express-transport-belt-loader"
+if data.raw["loader-1x1"]["fast-transport-belt-loader"] then
+	data.raw["loader-1x1"]["fast-transport-belt-loader"].next_upgrade = "express-transport-belt-loader"
 end
 if data.raw.furnace["fast-transport-belt-beltbox"] then
 	data.raw.furnace["fast-transport-belt-beltbox"].next_upgrade = "express-transport-belt-beltbox"
