@@ -1,8 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 2.3.3
-Date: 03. 03. 2020
-  Changes:
-    - Fix a few type changes that billbo99 forgot
+Date: 07. 03. 2020
+  Bugfixes:
+    - Fix upgrade planner properties for new entity type
 ---------------------------------------------------------------------------------------------------
 Version: 2.3.2
 Date: 01. 03. 2020
