@@ -142,7 +142,7 @@ local function auto_unstack(item_name, item_count, sending_inventory, receiving_
 			count = add_count * item_count,
 		})
 		
-		partial_inserted = inserted % add_count 
+		local partial_inserted = inserted % add_count 
 		-- if player inventory is nearly full it may happen that just 8 items are inserted with add_count==5
 		-- partial inserted then will be 3
 		if partial_inserted > 0 then
@@ -152,7 +152,7 @@ local function auto_unstack(item_name, item_count, sending_inventory, receiving_
 			})
 		end
 		-- now remove the inserted items in their stacked variant. With the example above this is 1 stacked item
-		full_stack_inserted = math.floor(inserted / add_count)
+		local full_stack_inserted = math.floor(inserted / add_count)
 		if full_stack_inserted > 0 then
 			sending_inventory.remove({
 				name = item_name,
@@ -172,7 +172,7 @@ local inventories_to_check = {
 	defines.inventory.robot_cargo,
 }
 local function try_unstacking(entity, inventory_type, player_inventory)
-	mined_entity_inventory = entity.get_inventory(inventory_type)
+	local mined_entity_inventory = entity.get_inventory(inventory_type)
 	if mined_entity_inventory then
 		for item_name, item_count in pairs(mined_entity_inventory.get_contents()) do
 			auto_unstack(item_name, item_count, mined_entity_inventory, player_inventory)
@@ -181,18 +181,18 @@ local function try_unstacking(entity, inventory_type, player_inventory)
 end
 
 local function on_pre_player_mined_item(event)
-	player_inventory = game.players[event.player_index].get_main_inventory()
+	local player_inventory = game.players[event.player_index].get_main_inventory()
 
 	for i, v in ipairs(inventories_to_check) do
 		try_unstacking(event.entity, v, player_inventory)
 	end
 end
 local function on_picked_up_item(event) 
-	player_inventory = game.players[event.player_index].get_main_inventory()
+	local player_inventory = game.players[event.player_index].get_main_inventory()
 	auto_unstack(event.item_stack.name, event.item_stack.count, player_inventory, player_inventory)
 end
 local function on_player_mined_entity(event) 
-	player_inventory = game.players[event.player_index].get_main_inventory()
+	local player_inventory = game.players[event.player_index].get_main_inventory()
 	for item_name, item_count in pairs(event.buffer.get_contents()) do
 		auto_unstack(item_name, item_count, event.buffer, player_inventory)
 	end
