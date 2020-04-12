@@ -46,13 +46,17 @@ function DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size, 
 			end
 		end
 	end
+	local stack_stack_size = data.raw[item_type][item_name].stack_size
+	if DBL.PRESERVE_DENSITY then
+		stack_stack_size = math.floor(stack_stack_size/stack_size)
+	end
 	data:extend({
 		{
 			type = "item",
 			name = string.format("deadlock-stack-%s", item_name),
 			localised_name = {"item-name.deadlock-stacking-stack", get_localised_name(item_name), stack_size},
 			icons = stacked_icons,
-			stack_size = math.floor(data.raw[item_type][item_name].stack_size/stack_size),
+			stack_size = stack_stack_size,
 			flags = {},
 			subgroup = string.format("stacks-%s", get_group(item_name, item_type)),
 			order = DBL.item_order[item_name],
@@ -73,7 +77,10 @@ function DBL.deferred_stacked_item_updates()
 		if data.raw[item_type][item_name] then
 			local stack_size = deadlock.get_item_stack_density(item_name, item_type)
 			data.raw.item[stacked_item_name].subgroup = string.format("stacks-%s", get_group(item_name, item_type))
-			data.raw.item[stacked_item_name].stack_size = math.floor(data.raw[item_type][item_name].stack_size/stack_size)
+			data.raw.item[stacked_item_name].stack_size = data.raw[item_type][item_name].stack_size
+			if DBL.PRESERVE_DENSITY then
+				data.raw.item[stacked_item_name].stack_size = math.floor(data.raw.item[stacked_item_name].stack_size/stack_size)
+			end
 			data.raw.item[stacked_item_name].localised_name = {"item-name.deadlock-stacking-stack", get_localised_name(item_name), stack_size}
 			-- warn when the current stack size causes a loss in inventory density for this item
 			if data.raw[item_type][item_name].stack_size % stack_size > 0 then

@@ -19,6 +19,7 @@ end
 
 DBL.STACK_SIZE = settings.startup["deadlock-stack-size"].value
 DBL.CRAFT_TIME = DBL.STACK_SIZE / 15
+DBL.PRESERVE_DENSITY = settings.startup["deadlock-preserve-density"].value
 
 DBL.VANILLA_ITEMS = {
 	[1] = { "wood", "iron-ore", "copper-ore", "stone", "coal", "iron-plate", "copper-plate", "steel-plate", "stone-brick" },

@@ -36,6 +36,13 @@ data:extend({
 	},
 	{
 		type = "bool-setting",
+		name = "deadlock-preserve-density",
+		order = "bbb",
+		setting_type = "startup",
+		default_value = true,
+	},
+	{
+		type = "bool-setting",
 		name = "deadlock-stacking-auto-unstack",
 		order = "c",
 		setting_type = "startup",
