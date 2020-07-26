@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.3.6
+Date: 26. 07. 2020
+  Bugfixes:
+    - Use icons property instead of icon when both are present and fix bad size assumption, courtesy of kirazy on GitHub
+---------------------------------------------------------------------------------------------------
 Version: 2.3.5
 Date: 11. 04. 2020
   Bugfixes:
