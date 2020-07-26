@@ -24,14 +24,21 @@ function DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size, 
 		stacked_icons = { { icon = graphic_path, icon_size = icon_size, icon_mipmaps = mipmap_levels } }
 	else
 		local base_item = data.raw[item_type][item_name]
-		if base_item.icon then
+		-- Icons has priority over icon, check for icons definition first
+		if base_item.icons then 
+			temp_icons = table.deepcopy(base_item.icons)
+			-- We've fetched the icons, check icon_size is present in each layer, and if not, assign it
+			-- No need to check if base_item.icon_size exists, because if it's not defined there and not defined here, Factorio itself will not start
+			for _, icons_layer in pairs(temp_icons) do
+				if not icons_layer.icon_size then icons_layer.icon_size = base_item.icon_size end
+			end
+		-- If no icons field, look for icon definition
+		elseif base_item.icon then
 			if not base_item.icon_size then
 				DBL.log_error(string.format("Can't create layered icon for item (%s), base item defines icon but no icon_size", item_name))
 				return
 			end
 			temp_icons = { { icon = base_item.icon, icon_size = base_item.icon_size, icon_mipmaps = base_item.icon_mipmaps } }
-		elseif base_item.icons then
-			temp_icons = table.deepcopy(base_item.icons)
 		else
 			DBL.log_error(string.format("Can't create stacks for item with no icon properties (%s)", item_name))
 			return
