@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.3.7
+Date: 31. 10. 2020
+  Bugfixes:
+    - Fix multiplication of fuel value for items with non-whole-number values, courtesy of billbo99
+---------------------------------------------------------------------------------------------------
 Version: 2.3.6
 Date: 26. 07. 2020
   Bugfixes:
