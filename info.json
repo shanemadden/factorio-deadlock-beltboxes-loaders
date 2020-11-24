@@ -1,13 +1,13 @@
 {
     "name": "deadlock-beltboxes-loaders",
-    "version": "2.3.6",
+    "version": "2.4.0",
     "title": "Deadlock's Stacking Beltboxes & Compact Loaders",
     "author": "Deadlock989, Shane Madden",
     "homepage": "https://forums.factorio.com/viewtopic.php?f=94&t=57264",
     "dependencies": [
-        "base >= 0.18.3",
+        "base >= 1.1.0",
         "? ReStack"
     ],
     "description": "Adds minimalist 1x1 loaders and stacking beltboxes for 5x belt compression for ores, plates and some intermediate products",
-    "factorio_version": "0.18"
+    "factorio_version": "1.1"
 }
