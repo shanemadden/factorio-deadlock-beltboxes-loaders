@@ -44,10 +44,10 @@ local function create_loader_entity(tier_table)
 	entity.open_sound = { filename = "__base__/sound/wooden-chest-open.ogg", volume = 1.0 }
 	entity.close_sound = { filename = "__base__/sound/wooden-chest-close.ogg", volume = 1.0 }
 	entity.corpse = "small-remnants"
-	entity.collision_box = { {-0.2, -0.2}, {0.2, 0.2} }
-	entity.collision_mask = {"item-layer", "object-layer", "player-layer", "water-tile"}
+	entity.collision_box = { {-0.26, -0.26}, {0.26, 0.26} }  -- 1.1 requires min of 0.5 width
+	entity.collision_mask = {"item-layer", "object-layer", "player-layer", "water-tile", "transport-belt-layer" }  -- 1.1 requires "transport-belt-layer"
 	entity.selection_box = { {-0.5, -0.5}, {0.5, 0.5} }
-	entity.minable = { hardness = 0.2, mining_time = 0.5, result = tier_table.loader_item or tier_table.loader }
+	entity.minable = { hardness = 0.2, mining_time = 0.5, result = tier_table.loader_item or tier_table.loader}
 	entity.max_health = 170
 	entity.resistances = {{type = "fire", percent = 60 }}
 	entity.belt_distance = 0.5
