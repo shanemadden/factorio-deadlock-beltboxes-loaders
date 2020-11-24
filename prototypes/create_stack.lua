@@ -1,5 +1,20 @@
 local DBL = require("prototypes.shared")
 
+-- multiply a number with a unit (kJ, kW etc) at the end
+local function multiply_number_unit(property, mult)
+    local value, unit
+    value = string.match(property, "%d+")
+    if string.match(property, "%d+%.%d+") then -- catch floats
+        value = string.match(property, "%d+%.%d+")
+    end
+    unit = string.match(property, "%a+")
+    if unit == nil then
+        return value * mult
+    else
+        return ((value * mult) .. unit)
+    end
+end
+
 local function get_group(item, item_type)
 	local g = data.raw["item-group"][data.raw["item-subgroup"][data.raw[item_type][item].subgroup].group].name
 	if not g then
@@ -92,7 +107,8 @@ function DBL.deferred_stacked_item_updates()
 				data.raw.item[stacked_item_name].fuel_top_speed_multiplier = data.raw[item_type][item_name].fuel_top_speed_multiplier
 				data.raw.item[stacked_item_name].fuel_emissions_multiplier = data.raw[item_type][item_name].fuel_emissions_multiplier
 				-- great, the fuel value is a string, with SI units. how very easy to work with
-				data.raw.item[stacked_item_name].fuel_value = (tonumber(string.match(data.raw[item_type][item_name].fuel_value, "%d+")) * stack_size) .. string.match(data.raw[item_type][item_name].fuel_value, "%a+")
+				-- now works with fuel values that have a decimal place
+				data.raw.item[stacked_item_name].fuel_value = multiply_number_unit(data.raw[item_type][item_name].fuel_value, stack_size)
 			end
 		else
 			DBL.log_warning("Item \""..item_name.."\" appears to have been deleted since it was added to the deferred item updates list, skipping it.")
