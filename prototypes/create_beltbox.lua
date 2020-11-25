@@ -223,8 +223,8 @@ local function create_beltbox_technology(tier_table)
 		}
 	}
 	tech.icons = {
-		{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/square/beltbox-icon-base-128.png" },
-		{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/square/beltbox-icon-mask-128.png", tint = tier_table.colour },
+		{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/square/beltbox-icon-base-128.png", icon_size = 128 },  -- 1.1 appears to be defaulting to 256
+		{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/square/beltbox-icon-mask-128.png", icon_size = 128, tint = tier_table.colour },  -- 1.1 appears to be defaulting to 256
 	}
 	tech.name = tier_table.beltbox_technology
 	tech.unit.count = tech.unit.count * 1.5
