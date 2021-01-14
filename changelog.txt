@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.4.1
+Date: 13. 01. 2021
+  Changes:
+    - Remove check for whether loaders are from this mod for snapping to improve compatibility with other mods. Reminder: snapping options can be disabled in settings if desired.
+---------------------------------------------------------------------------------------------------
 Version: 2.4.0
 Date: 24. 11. 2020
   Changes:

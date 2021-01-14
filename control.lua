@@ -1,24 +1,5 @@
 local STACK_SIZE = settings.startup["deadlock-stack-size"].value
 
-local created_loader = {}
-do
-	-- Need to determine if each loader was created by this mod to determine if we should snap for it.
-	-- Because this is a smidge expensive, we don't want to check every time
-	-- lazily cache for each loader whether it's ours and should be snapped
-	local loader_check_metatable = {
-		__index = function(table, key)
-			if string.match(game.item_prototypes[key].order, "deadlock%-loader") then
-				table[key] = true
-				return true
-			else
-				table[key] = false
-				return false
-			end
-		end
-	}
-	created_loader = setmetatable(created_loader, loader_check_metatable)
-end
-
 -- work with directions
 local opposite = {
 	[defines.direction.north] = defines.direction.south,
@@ -77,7 +58,7 @@ end
 local function on_built_entity(event)
 	local built = event.created_entity
 	-- invalid build or fake player build from pseudo-bot mods?
-	if not built or not built.valid or event.revived or built.type ~= "loader-1x1" or not created_loader[built.name] then
+	if not built or not built.valid or event.revived or built.type ~= "loader-1x1" then
 		return
 	end
 	local snap2inv = settings.get_player_settings(game.players[event.player_index])["deadlock-loaders-snap-to-inventories"].value
