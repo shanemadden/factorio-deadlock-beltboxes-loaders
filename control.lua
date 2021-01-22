@@ -103,7 +103,7 @@ end
 script.on_event(defines.events.on_built_entity, on_built_entity)
 
 -- auto-unstacking by ownlyme
-local function auto_unstack(item_name, item_count, sending_inventory, receiving_inventory)
+local function auto_unstack(item_name, item_count, sending_inventory, receiving_inventory, show_flying_text)
 	-- item_name: The name of the stacked item which should be unstacked
 	-- item_count: The number of items that should be unstacked
 	-- sending_inventory: the inventory that contains the stacked item
@@ -140,6 +140,20 @@ local function auto_unstack(item_name, item_count, sending_inventory, receiving_
 				count = full_stack_inserted,
 			})
 		end
+
+		if show_flying_text then
+			receiving_inventory.player_owner.create_local_flying_text{
+				text = {'',
+					'+',
+					inserted,
+					' ',
+					prototype.localised_name,
+					' (',
+					receiving_inventory.get_item_count(prototype.name),
+					')'},
+				create_at_cursor = true,
+			}
+		end
 	end
 end
 
@@ -152,11 +166,11 @@ local inventories_to_check = {
 	defines.inventory.assembling_machine_output,
 	defines.inventory.robot_cargo,
 }
-local function try_unstacking(entity, inventory_type, player_inventory)
+local function try_unstacking(entity, inventory_type, player_inventory, show_flying_text)
 	local mined_entity_inventory = entity.get_inventory(inventory_type)
 	if mined_entity_inventory then
 		for item_name, item_count in pairs(mined_entity_inventory.get_contents()) do
-			auto_unstack(item_name, item_count, mined_entity_inventory, player_inventory)
+			auto_unstack(item_name, item_count, mined_entity_inventory, player_inventory, show_flying_text)
 		end
 	end
 end
@@ -165,17 +179,17 @@ local function on_pre_player_mined_item(event)
 	local player_inventory = game.players[event.player_index].get_main_inventory()
 
 	for i, v in ipairs(inventories_to_check) do
-		try_unstacking(event.entity, v, player_inventory)
+		try_unstacking(event.entity, v, player_inventory, true)
 	end
 end
 local function on_picked_up_item(event) 
 	local player_inventory = game.players[event.player_index].get_main_inventory()
-	auto_unstack(event.item_stack.name, event.item_stack.count, player_inventory, player_inventory)
+	auto_unstack(event.item_stack.name, event.item_stack.count, player_inventory, player_inventory, false)
 end
 local function on_player_mined_entity(event) 
 	local player_inventory = game.players[event.player_index].get_main_inventory()
 	for item_name, item_count in pairs(event.buffer.get_contents()) do
-		auto_unstack(item_name, item_count, event.buffer, player_inventory)
+		auto_unstack(item_name, item_count, event.buffer, player_inventory, true)
 	end
 end
 -- conditionally register based on the state of the setting so it's not costing any performance when disabled
