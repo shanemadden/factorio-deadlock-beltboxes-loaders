@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.4.2
+Date: 09. 05. 2021
+  Changes:
+    - Remove old compatibility workarounds from build event code, and add an event filter to improve performance.
+---------------------------------------------------------------------------------------------------
 Version: 2.4.1
 Date: 13. 01. 2021
   Changes:
