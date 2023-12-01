@@ -21,8 +21,8 @@ DBL.STACK_SIZE = settings.startup["deadlock-stack-size"].value
 DBL.CRAFT_TIME = DBL.STACK_SIZE / 15
 
 DBL.VANILLA_ITEMS = {
-	[1] = { "wood", "iron-ore", "copper-ore", "stone", "coal", "iron-plate", "copper-plate", "steel-plate", "stone-brick" },
-	[2] = { "copper-cable", "iron-gear-wheel", "iron-stick", "sulfur", "plastic-bar", "solid-fuel", "electronic-circuit", "advanced-circuit" },
+	[1] = { "wood", "iron-ore", "copper-ore", "stone", "coal", "iron-plate", "copper-plate", "steel-plate", "copper-cable", "iron-gear-wheel", "iron-stick", "stone-brick" },
+	[2] = { "sulfur", "plastic-bar", "solid-fuel", "electronic-circuit", "advanced-circuit" },
 	[3] = { "processing-unit", "battery", "uranium-ore", "uranium-235", "uranium-238" },
 }
 DBL.VANILLA_ICON_SIZE = 32
