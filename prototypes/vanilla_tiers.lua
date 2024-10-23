@@ -7,14 +7,14 @@ deadlock.add_tier({
 	technology          = "logistics",
 	order               = "a",
 	loader_ingredients  = {
-		{"transport-belt", 1},
-		{"iron-plate", 5},
+		{name = "transport-belt", type = "item", amount = 1},
+		{name = "iron-plate", type = "item", amount = 5},
 	},
 	beltbox_ingredients = {
-		{"transport-belt", 4},
-		{"iron-plate", 10},
-		{"iron-gear-wheel", 10},
-		{"electronic-circuit", 4},
+		{name = "transport-belt", type = "item", amount = 4},
+		{name = "iron-plate", type = "item", amount = 10},
+		{name = "iron-gear-wheel", type = "item", amount = 10},
+		{name = "electronic-circuit", type = "item", amount = 4},
 	},
 	beltbox_technology  = "deadlock-stacking-1",
 })
@@ -34,14 +34,14 @@ deadlock.add_tier({
 	technology          = "logistics-2",
 	order               = "b",
 	loader_ingredients  = {
-		{"transport-belt-loader", 1},
-		{"iron-gear-wheel", 20},
+		{name = "transport-belt-loader", type = "item", amount = 1},
+		{name = "iron-gear-wheel", type = "item", amount = 20},
 	},
 	beltbox_ingredients = {
-		{"transport-belt-beltbox", 1},
-		{"iron-plate", 20},
-		{"iron-gear-wheel", 20},
-		{"advanced-circuit", 2},
+		{name = "transport-belt-beltbox", type = "item", amount = 1},
+		{name = "iron-plate", type = "item", amount = 20},
+		{name = "iron-gear-wheel", type = "item", amount = 20},
+		{name = "advanced-circuit", type = "item", amount = 2},
 	},
 	beltbox_technology  = "deadlock-stacking-2",
 })
@@ -64,15 +64,15 @@ deadlock.add_tier({
 	technology          = "logistics-3",
 	order               = "c",
 	loader_ingredients  = {
-		{"fast-transport-belt-loader", 1},
-		{"iron-gear-wheel", 40},
+		{name = "fast-transport-belt-loader", type = "item", amount = 1},
+		{name = "iron-gear-wheel", type = "item", amount = 40},
 		{name = "lubricant", type = "fluid", amount = 20},
 	},
 	loader_category     = "crafting-with-fluid",
 	beltbox_ingredients = {
-		{"fast-transport-belt-beltbox", 1},
-		{"iron-plate", 30},
-		{"iron-gear-wheel", 30},
+		{name = "fast-transport-belt-beltbox", type = "item", amount = 1},
+		{name = "iron-plate", type = "item", amount = 30},
+		{name = "iron-gear-wheel", type = "item", amount = 30},
 		{name = "lubricant", type = "fluid", amount = 100},
 	},
 	beltbox_category    = "crafting-with-fluid",
@@ -80,4 +80,33 @@ deadlock.add_tier({
 })
 if data.raw.technology["deadlock-stacking-3"] then
 	table.insert(data.raw.technology["deadlock-stacking-3"].prerequisites, "deadlock-stacking-2")
+end
+
+if mods["space-age"] then
+    -- tier 4
+    deadlock.add_tier({
+        transport_belt      = "turbo-transport-belt",
+        colour              = {r=160, g=190, b=80},
+        underground_belt    = "turbo-underground-belt",
+        splitter            = "turbo-splitter",
+        technology          = "turbo-transport-belt",
+        order               = "d",
+        loader_ingredients  = {
+            {name = "fast-transport-belt-loader", type = "item", amount = 1},
+            {name = "tungsten-plate", type = "item", amount = 20},
+            {name = "lubricant", type = "fluid", amount = 20},
+        },
+        loader_category     = "crafting-with-fluid",
+        beltbox_ingredients = {
+            {name = "fast-transport-belt-beltbox", type = "item", amount = 1},
+            {name = "tungsten-plate", type = "item", amount = 15},
+            {name = "iron-gear-wheel", type = "item", amount = 15},
+            {name = "lubricant", type = "fluid", amount = 100},
+        },
+        beltbox_category    = "crafting-with-fluid",
+        beltbox_technology  = "deadlock-stacking-4",
+    })
+    if data.raw.technology["deadlock-stacking-4"] then
+        table.insert(data.raw.technology["deadlock-stacking-4"].prerequisites, "deadlock-stacking-3")
+    end
 end

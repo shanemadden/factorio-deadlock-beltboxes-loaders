@@ -40,7 +40,7 @@ function DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size, 
 	else
 		local base_item = data.raw[item_type][item_name]
 		-- Icons has priority over icon, check for icons definition first
-		if base_item.icons then 
+		if base_item.icons then
 			temp_icons = table.deepcopy(base_item.icons)
 			-- We've fetched the icons, check icon_size is present in each layer, and if not, assign it
 			-- No need to check if base_item.icon_size exists, because if it's not defined there and not defined here, Factorio itself will not start
@@ -72,7 +72,7 @@ function DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size, 
 		{
 			type = "item",
 			name = string.format("deadlock-stack-%s", item_name),
-			localised_name = {"item-name.deadlock-stacking-stack", get_localised_name(item_name), stack_size},
+			localised_name = {"item-name.deadlock-stacking-stack", get_localised_name(item_name), tostring(stack_size)},
 			icons = stacked_icons,
 			stack_size = math.floor(data.raw[item_type][item_name].stack_size/stack_size),
 			flags = {},
@@ -96,7 +96,7 @@ function DBL.deferred_stacked_item_updates()
 			local stack_size = deadlock.get_item_stack_density(item_name, item_type)
 			data.raw.item[stacked_item_name].subgroup = string.format("stacks-%s", get_group(item_name, item_type))
 			data.raw.item[stacked_item_name].stack_size = math.floor(data.raw[item_type][item_name].stack_size/stack_size)
-			data.raw.item[stacked_item_name].localised_name = {"item-name.deadlock-stacking-stack", get_localised_name(item_name), stack_size}
+			data.raw.item[stacked_item_name].localised_name = {"item-name.deadlock-stacking-stack", get_localised_name(item_name), tostring(stack_size)}
 			-- warn when the current stack size causes a loss in inventory density for this item
 			if data.raw[item_type][item_name].stack_size % stack_size > 0 then
 				DBL.log_warning(string.format("Full stack density for %s is reduced to %d from source stack size %d, doesn't divide cleanly by %d", stacked_item_name, (data.raw.item[stacked_item_name].stack_size * stack_size), data.raw[item_type][item_name].stack_size, stack_size))
@@ -128,7 +128,7 @@ function DBL.create_stacking_recipes(item_name, item_type, stack_size)
 	local stack_speed_modifier = stack_size / DBL.STACK_SIZE
 	-- stacking
 	local stack_icons = table.deepcopy(base_icons)
-	table.insert(stack_icons, 
+	table.insert(stack_icons,
 		{
 			icon = "__deadlock-beltboxes-loaders__/graphics/icons/square/arrow-d-64.png",
 			scale = 0.25,
@@ -146,9 +146,8 @@ function DBL.create_stacking_recipes(item_name, item_type, stack_size)
 			order = DBL.recipe_order[item_name].."[a]",
 			enabled = false,
 			allow_decomposition = false,
-			ingredients = { {item_name, stack_size * DBL.RECIPE_MULTIPLIER} },
-			result = string.format("deadlock-stack-%s", item_name),
-			result_count = DBL.RECIPE_MULTIPLIER,
+			ingredients = {{type = "item", name = item_name, amount = stack_size * DBL.RECIPE_MULTIPLIER}},
+			results = {{type = "item", name = string.format("deadlock-stack-%s", item_name), amount = DBL.RECIPE_MULTIPLIER}},
 			energy_required = DBL.CRAFT_TIME * DBL.RECIPE_MULTIPLIER * stack_speed_modifier,
 			icons = stack_icons,
 			hidden = true,
@@ -158,7 +157,7 @@ function DBL.create_stacking_recipes(item_name, item_type, stack_size)
 	})
 	-- unstacking
 	local unstack_icons = table.deepcopy(base_icons)
-	table.insert(unstack_icons, 
+	table.insert(unstack_icons,
 		{
 			icon = "__deadlock-beltboxes-loaders__/graphics/icons/square/arrow-u-64.png",
 			scale = 0.25,
@@ -176,9 +175,8 @@ function DBL.create_stacking_recipes(item_name, item_type, stack_size)
 			order = DBL.recipe_order[item_name].."[b]",
 			enabled = false,
 			allow_decomposition = false,
-			ingredients = { {string.format("deadlock-stack-%s", item_name), DBL.RECIPE_MULTIPLIER} },
-			result = item_name,
-			result_count = stack_size * DBL.RECIPE_MULTIPLIER,
+			ingredients = {{type = "item", name = string.format("deadlock-stack-%s", item_name), amount = DBL.RECIPE_MULTIPLIER}},
+			results = {{type = "item", name = item_name, amount = stack_size * DBL.RECIPE_MULTIPLIER}},
 			energy_required = DBL.CRAFT_TIME * DBL.RECIPE_MULTIPLIER * stack_speed_modifier,
 			icons = unstack_icons,
 			hidden = settings.startup["deadlock-stacking-hide-unstacking"].value,
