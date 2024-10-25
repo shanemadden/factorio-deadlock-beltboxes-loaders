@@ -114,7 +114,7 @@ local function auto_unstack(item_name, item_count, sending_inventory, receiving_
 		local add_count = STACK_SIZE
 		-- if the base item's stack size is lower than the configured STACK_SIZE then
 		-- this should reward the lower of the two
-		local prototype = game.item_prototypes[string.sub(item_name, 16)]
+		local prototype = prototypes.item[string.sub(item_name, 16)]
 		if STACK_SIZE > prototype.stack_size then
 			add_count = prototype.stack_size
 		end
