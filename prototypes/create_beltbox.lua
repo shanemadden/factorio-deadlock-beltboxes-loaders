@@ -19,67 +19,67 @@ local function create_beltbox_entity(tier_table)
 		icon_size = 64,
 		icon_mipmaps = 4,
 		flags = { "placeable-neutral", "placeable-player", "player-creation" },
-        graphics_set = {
-            animation = {
-                layers = {
-                    {
-                        filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/beltbox-base.png",
-                        animation_speed = 1 / crafting_speed,
-                        priority = "high",
-                        frame_count = 60,
-                        line_length = 10,
-                        height = 96,
-                        scale = 0.5,
-                        shift = {0, 0},
-                        width = 96
-                    },
-                    {
-                        filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/beltbox-mask.png",
-                        animation_speed = 1 / crafting_speed,
-                        priority = "high",
-                        repeat_count = 60,
-                        height = 96,
-                        scale = 0.5,
-                        shift = {0, 0},
-                        width = 96,
-                        tint = tier_table.colour,
-                    },
-                    {
-                        draw_as_shadow = true,
-                        filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/beltbox-shadow.png",
-                        animation_speed = 1 / crafting_speed,
-                        frame_count = 60,
-                        line_length = 10,
-                        height = 96,
-                        scale = 0.5,
-                        shift = {0.5, 0},
-                        width = 144
-                    },
-                },
-            },
-            working_visualisations = {
-                {
-                    animation = {
-                        animation_speed = 1 / crafting_speed,
-                        blend_mode = "additive",
-                        filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/beltbox-working.png",
-                        frame_count = 30,
-                        line_length = 10,
-                        height = 96,
-                        priority = "high",
-                        scale = 0.5,
-                        tint = brighter_colour(tier_table.colour),
-                        width = 96
-                    },
-                    light = {
-                        color = brighter_colour(tier_table.colour),
-                        intensity = 0.4,
-                        size = 3,
-                        shift = {0, 0.25},
-                    },
-                },
-            }
-        },
+		graphics_set = {
+			animation = {
+				layers = {
+					{
+						filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/beltbox-base.png",
+						animation_speed = 1 / crafting_speed,
+						priority = "high",
+						frame_count = 60,
+						line_length = 10,
+						height = 96,
+						scale = 0.5,
+						shift = {0, 0},
+						width = 96
+					},
+					{
+						filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/beltbox-mask.png",
+						animation_speed = 1 / crafting_speed,
+						priority = "high",
+						repeat_count = 60,
+						height = 96,
+						scale = 0.5,
+						shift = {0, 0},
+						width = 96,
+						tint = tier_table.colour,
+					},
+					{
+						draw_as_shadow = true,
+						filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/beltbox-shadow.png",
+						animation_speed = 1 / crafting_speed,
+						frame_count = 60,
+						line_length = 10,
+						height = 96,
+						scale = 0.5,
+						shift = {0.5, 0},
+						width = 144
+					},
+				},
+			},
+			working_visualisations = {
+				{
+					animation = {
+						animation_speed = 1 / crafting_speed,
+						blend_mode = "additive",
+						filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/beltbox-working.png",
+						frame_count = 30,
+						line_length = 10,
+						height = 96,
+						priority = "high",
+						scale = 0.5,
+						tint = brighter_colour(tier_table.colour),
+						width = 96
+					},
+					light = {
+						color = brighter_colour(tier_table.colour),
+						intensity = 0.4,
+						size = 3,
+						shift = {0, 0.25},
+					},
+				},
+			}
+		},
 		dying_explosion = "explosion",
 		corpse = "small-remnants",
 		minable = {hardness = 0.2, mining_time = 0.5, result = tier_table.beltbox_item or tier_table.beltbox},

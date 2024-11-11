@@ -58,7 +58,7 @@ end
 local function on_built_entity(event)
 	local built = event.entity
 	-- invalid build? don't bother with faked "revived" property from pre-1.0 Nanobots/Bluebuild, those shenanigans can only be passed in script_raised_* events now
-    -- also no need to check entity type since we can filter for it on the event handler
+	-- also no need to check entity type since we can filter for it on the event handler
 	if not built or not built.valid then return end
 	local snap2inv = settings.get_player_settings(game.players[event.player_index])["deadlock-loaders-snap-to-inventories"].value
 	local snap2belt = settings.get_player_settings(game.players[event.player_index])["deadlock-loaders-snap-to-belts"].value

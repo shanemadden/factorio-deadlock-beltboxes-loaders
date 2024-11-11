@@ -2,17 +2,17 @@ local DBL = require("prototypes.shared")
 
 -- multiply a number with a unit (kJ, kW etc) at the end
 local function multiply_number_unit(property, mult)
-    local value, unit
-    value = string.match(property, "%d+")
-    if string.match(property, "%d+%.%d+") then -- catch floats
-        value = string.match(property, "%d+%.%d+")
-    end
-    unit = string.match(property, "%a+")
-    if unit == nil then
-        return value * mult
-    else
-        return ((value * mult) .. unit)
-    end
+	local value, unit
+	value = string.match(property, "%d+")
+	if string.match(property, "%d+%.%d+") then -- catch floats
+		value = string.match(property, "%d+%.%d+")
+	end
+	unit = string.match(property, "%a+")
+	if unit == nil then
+		return value * mult
+	else
+		return ((value * mult) .. unit)
+	end
 end
 
 local function get_group(item, item_type)
