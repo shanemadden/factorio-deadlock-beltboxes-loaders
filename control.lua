@@ -56,9 +56,9 @@ end
 -- else if there's an inventory ahead but not behind, turn around and switch mode
 -- else if no inventories and a belt ahead, turn around; also switch mode if belt is facing towards
 local function on_built_entity(event)
-	local built = event.created_entity
+	local built = event.entity
 	-- invalid build? don't bother with faked "revived" property from pre-1.0 Nanobots/Bluebuild, those shenanigans can only be passed in script_raised_* events now
-    -- also no need to check entity type since we can filter for it on the event handler
+	-- also no need to check entity type since we can filter for it on the event handler
 	if not built or not built.valid then return end
 	local snap2inv = settings.get_player_settings(game.players[event.player_index])["deadlock-loaders-snap-to-inventories"].value
 	local snap2belt = settings.get_player_settings(game.players[event.player_index])["deadlock-loaders-snap-to-belts"].value
@@ -114,7 +114,7 @@ local function auto_unstack(item_name, item_count, sending_inventory, receiving_
 		local add_count = STACK_SIZE
 		-- if the base item's stack size is lower than the configured STACK_SIZE then
 		-- this should reward the lower of the two
-		local prototype = game.item_prototypes[string.sub(item_name, 16)]
+		local prototype = prototypes.item[string.sub(item_name, 16)]
 		if STACK_SIZE > prototype.stack_size then
 			add_count = prototype.stack_size
 		end
@@ -197,8 +197,8 @@ local function on_configuration_changed(config)
 		for tech_name, tech_table in pairs(force.technologies) do
 			if tech_table.researched then
 				-- find any beltboxes or loaders or stacks in effects and unlock
-				for _, effect_table in ipairs(tech_table.effects) do
-					if effect_table.type == "unlock-recipe" and (string.find(game.recipe_prototypes[effect_table.recipe].order, "%-deadlock%-") or string.find(game.recipe_prototypes[effect_table.recipe].name, "deadlock%-")) then
+				for _, effect_table in ipairs(tech_table.prototype.effects) do
+					if effect_table.type == "unlock-recipe" and (string.find(prototypes.recipe[effect_table.recipe].order, "%-deadlock%-") or string.find(prototypes.recipe[effect_table.recipe].name, "deadlock%-")) then
 						force.recipes[effect_table.recipe].enabled = true
 					end
 				end
