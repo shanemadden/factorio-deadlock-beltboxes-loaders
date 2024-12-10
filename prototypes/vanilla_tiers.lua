@@ -68,18 +68,24 @@ deadlock.add_tier({
 		{name = "iron-gear-wheel", type = "item", amount = 40},
 		{name = "lubricant", type = "fluid", amount = 20},
 	},
-	loader_category     = "crafting-with-fluid",
+	loader_category     = "crafting-with-fluid-or-metallurgy",
 	beltbox_ingredients = {
 		{name = "fast-transport-belt-beltbox", type = "item", amount = 1},
 		{name = "iron-plate", type = "item", amount = 30},
 		{name = "iron-gear-wheel", type = "item", amount = 30},
 		{name = "lubricant", type = "fluid", amount = 100},
 	},
-	beltbox_category    = "crafting-with-fluid",
+	beltbox_category    = "crafting-with-fluid-or-metallurgy",
 	beltbox_technology  = "deadlock-stacking-3",
 })
 if data.raw.technology["deadlock-stacking-3"] then
 	table.insert(data.raw.technology["deadlock-stacking-3"].prerequisites, "deadlock-stacking-2")
+end
+if data.raw["loader-1x1"]["express-transport-belt-loader"] then
+	data.raw["loader-1x1"]["express-transport-belt-loader"].next_upgrade = "turbo-transport-belt-loader"
+end
+if data.raw.furnace["express-transport-belt-beltbox"] then
+	data.raw.furnace["express-transport-belt-beltbox"].next_upgrade = "turbo-transport-belt-beltbox"
 end
 
 if mods["space-age"] then
@@ -92,18 +98,18 @@ if mods["space-age"] then
         technology          = "turbo-transport-belt",
         order               = "d",
         loader_ingredients  = {
-            {name = "fast-transport-belt-loader", type = "item", amount = 1},
+            {name = "express-transport-belt-loader", type = "item", amount = 1},
             {name = "tungsten-plate", type = "item", amount = 20},
             {name = "lubricant", type = "fluid", amount = 20},
         },
-        loader_category     = "crafting-with-fluid",
+        loader_category     = "crafting-with-fluid-or-metallurgy",
         beltbox_ingredients = {
-            {name = "fast-transport-belt-beltbox", type = "item", amount = 1},
+            {name = "express-transport-belt-beltbox", type = "item", amount = 1},
             {name = "tungsten-plate", type = "item", amount = 15},
             {name = "iron-gear-wheel", type = "item", amount = 15},
             {name = "lubricant", type = "fluid", amount = 100},
         },
-        beltbox_category    = "crafting-with-fluid",
+        beltbox_category    = "crafting-with-fluid-or-metallurgy",
         beltbox_technology  = "deadlock-stacking-4",
     })
     if data.raw.technology["deadlock-stacking-4"] then
