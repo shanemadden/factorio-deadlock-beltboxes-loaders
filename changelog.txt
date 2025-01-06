@@ -3,7 +3,7 @@ Version: 2.6.0
 Date: 06. 01. 2025
   Changes:
     - Corrected the recipe for T4 loaders/beltboxes to use T3 instead of T2
-    - Allow T3 loaders/beltboxes to be made in foundaries when Space Age is present, matching the belts of that tier
+    - Allow T3/T4 loaders/beltboxes to be made in foundaries when Space Age is present, matching the belts of that tier
 ---------------------------------------------------------------------------------------------------
 Version: 2.5.0
 Date: 23. 10. 2024
