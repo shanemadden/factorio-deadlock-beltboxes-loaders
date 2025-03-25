@@ -24,6 +24,7 @@ DBL.VANILLA_ITEMS = {
 	[1] = { "wood", "iron-ore", "copper-ore", "stone", "coal", "iron-plate", "copper-plate", "steel-plate", "stone-brick", "tungsten-ore" },
 	[2] = { "copper-cable", "iron-gear-wheel", "iron-stick", "sulfur", "plastic-bar", "solid-fuel", "electronic-circuit", "advanced-circuit" },
 	[3] = { "processing-unit", "battery", "uranium-ore", "uranium-235", "uranium-238" },
+	[4] = { "scrap" },
 }
 DBL.VANILLA_ICON_SIZE = 32
 
