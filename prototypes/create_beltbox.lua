@@ -12,6 +12,9 @@ local function create_beltbox_entity(tier_table)
 		type = "furnace",
 		name = tier_table.beltbox,
 		localised_description = {"entity-description.deadlock-beltbox"},
+		-- Fix issue with QA
+		no_ams = true,
+		no_bq = true,
 		icons = {
 			{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/mipmaps/beltbox-icon-base.png" },
 			{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/mipmaps/beltbox-icon-mask.png", tint = tier_table.colour },
