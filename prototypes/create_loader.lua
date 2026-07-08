@@ -31,7 +31,7 @@ local function create_loader_entity(tier_table)
 	entity.open_sound = { filename = "__base__/sound/wooden-chest-open.ogg", volume = 1.0 }
 	entity.close_sound = { filename = "__base__/sound/wooden-chest-close.ogg", volume = 1.0 }
 	entity.corpse = "small-remnants"
-	entity.collision_box = { {-0.26, -0.26}, {0.26, 0.26} }  -- 1.1 requires min of 0.5 width
+	entity.collision_box = { {-0.26, -0.26}, {0.26, 0.26} }
 	entity.collision_mask = {layers = {item = true, object = true, player = true, water_tile = true, transport_belt = true, meltable = true}}
 	entity.selection_box = { {-0.5, -0.5}, {0.5, 0.5} }
 	entity.minable = { hardness = 0.2, mining_time = 0.5, result = tier_table.loader_item or tier_table.loader}
@@ -122,12 +122,9 @@ local function create_loader_entity(tier_table)
 			},
 		}
 	}
-	-- copy belt textures from the belt, not the loader
 	if data.raw["transport-belt"][tier_table.transport_belt].belt_animation_set then
-		-- new style animation set
 		entity.belt_animation_set = data.raw["transport-belt"][tier_table.transport_belt].belt_animation_set
 	else
-		-- old style, copy components
 		for _, bc in ipairs(DBL.BELT_COMPONENTS) do
 			if entity[bc] and data.raw["transport-belt"][tier_table.transport_belt][bc] then
 				entity[bc] = create_loader_belt_component(data.raw["transport-belt"][tier_table.transport_belt][bc])
@@ -164,7 +161,7 @@ local function create_loader_recipe(tier_table)
 		type = "recipe",
 		name = tier_table.loader_recipe or tier_table.loader,
 		localised_description = {"entity-description.deadlock-loader"},
-		category = tier_table.loader_category,
+		categories = { tier_table.loader_category },
 		group = "logistics",
 		subgroup = "loaders",
 		order = string.format("a%s%s", (tier_table.order or tier_table.loader), "-deadlock-loader"),
@@ -186,7 +183,6 @@ function DBL.create_loader(tier_table)
 		create_loader_entity(tier_table),
 		create_loader_recipe(tier_table),
 	})
-	-- insert the loader recipe into logistics unlock
 	if tier_table.technology then
 		local tech = data.raw.technology[tier_table.technology]
 		if not tech then
