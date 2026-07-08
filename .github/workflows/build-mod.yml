@@ -1,0 +1,52 @@
+name: Build Factorio mod zip
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install zip
+        run: sudo apt-get update && sudo apt-get install -y zip
+
+      - name: Read mod metadata
+        id: metadata
+        shell: bash
+        run: |
+          MOD_NAME=$(python3 -c 'import json; print(json.load(open("info.json"))["name"])')
+          VERSION=$(python3 -c 'import json; print(json.load(open("info.json"))["version"])')
+          FOLDER_NAME="${MOD_NAME}_${VERSION}"
+          echo "mod_name=${MOD_NAME}" >> "$GITHUB_OUTPUT"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "folder_name=${FOLDER_NAME}" >> "$GITHUB_OUTPUT"
+          echo "zip_name=${FOLDER_NAME}.zip" >> "$GITHUB_OUTPUT"
+
+      - name: Build zip
+        shell: bash
+        run: |
+          FOLDER_NAME="${{ steps.metadata.outputs.folder_name }}"
+          mkdir -p "dist/stage/${FOLDER_NAME}"
+          rsync -a \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='dist' \
+            --exclude='package.ps1' \
+            --exclude='package.sh' \
+            ./ "dist/stage/${FOLDER_NAME}/"
+          cd dist/stage
+          zip -r "../${FOLDER_NAME}.zip" "${FOLDER_NAME}"
+
+      - name: Upload mod zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.metadata.outputs.zip_name }}
+          path: dist/${{ steps.metadata.outputs.zip_name }}
+          if-no-files-found: error
