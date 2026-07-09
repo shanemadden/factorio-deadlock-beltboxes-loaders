@@ -6,10 +6,12 @@ deadlock.add_tier({
 	splitter            = "splitter",
 	technology          = "logistics",
 	order               = "a",
+	loader_category     = "crafting",
 	loader_ingredients  = {
 		{name = "transport-belt", type = "item", amount = 1},
 		{name = "iron-plate", type = "item", amount = 5},
 	},
+	beltbox_category    = "crafting",
 	beltbox_ingredients = {
 		{name = "transport-belt", type = "item", amount = 4},
 		{name = "iron-plate", type = "item", amount = 10},
@@ -33,10 +35,12 @@ deadlock.add_tier({
 	splitter            = "fast-splitter",
 	technology          = "logistics-2",
 	order               = "b",
+	loader_category     = "crafting",
 	loader_ingredients  = {
 		{name = "transport-belt-loader", type = "item", amount = 1},
 		{name = "iron-gear-wheel", type = "item", amount = 20},
 	},
+	beltbox_category    = "crafting",
 	beltbox_ingredients = {
 		{name = "transport-belt-beltbox", type = "item", amount = 1},
 		{name = "iron-plate", type = "item", amount = 20},
@@ -91,7 +95,6 @@ if data.raw.technology["deadlock-stacking-3"] then
 end
 
 if mods["space-age"] then
-	-- add the upgrade for t3 only if space age is present and we're gonna be loading t4
 	if data.raw["loader-1x1"]["express-transport-belt-loader"] then
 		data.raw["loader-1x1"]["express-transport-belt-loader"].next_upgrade = "turbo-transport-belt-loader"
 	end

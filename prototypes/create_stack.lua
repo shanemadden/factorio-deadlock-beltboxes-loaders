@@ -34,20 +34,16 @@ end
 local items_to_update = {}
 function DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size, stack_size, mipmap_levels)
 	DBL.debug(string.format("Creating stacked item: %s", item_name))
-	local temp_icons, stacked_icons --, this_fuel_category, this_fuel_acceleration_multiplier, this_fuel_top_speed_multiplier, this_fuel_value, this_fuel_emissions_multiplier
+	local temp_icons, stacked_icons
 	if graphic_path then
 		stacked_icons = { { icon = graphic_path, icon_size = icon_size, icon_mipmaps = mipmap_levels } }
 	else
 		local base_item = data.raw[item_type][item_name]
-		-- Icons has priority over icon, check for icons definition first
 		if base_item.icons then
 			temp_icons = table.deepcopy(base_item.icons)
-			-- We've fetched the icons, check icon_size is present in each layer, and if not, assign it
-			-- No need to check if base_item.icon_size exists, because if it's not defined there and not defined here, Factorio itself will not start
 			for _, icons_layer in pairs(temp_icons) do
 				if not icons_layer.icon_size then icons_layer.icon_size = base_item.icon_size end
 			end
-		-- If no icons field, look for icon definition
 		elseif base_item.icon then
 			if not base_item.icon_size then
 				DBL.log_error(string.format("Can't create layered icon for item (%s), base item defines icon but no icon_size", item_name))
@@ -97,7 +93,6 @@ function DBL.deferred_stacked_item_updates()
 			data.raw.item[stacked_item_name].subgroup = string.format("stacks-%s", get_group(item_name, item_type))
 			data.raw.item[stacked_item_name].stack_size = math.floor(data.raw[item_type][item_name].stack_size/stack_size)
 			data.raw.item[stacked_item_name].localised_name = {"item-name.deadlock-stacking-stack", get_localised_name(item_name), tostring(stack_size)}
-			-- warn when the current stack size causes a loss in inventory density for this item
 			if data.raw[item_type][item_name].stack_size % stack_size > 0 then
 				DBL.log_warning(string.format("Full stack density for %s is reduced to %d from source stack size %d, doesn't divide cleanly by %d", stacked_item_name, (data.raw.item[stacked_item_name].stack_size * stack_size), data.raw[item_type][item_name].stack_size, stack_size))
 			end
@@ -106,8 +101,6 @@ function DBL.deferred_stacked_item_updates()
 				data.raw.item[stacked_item_name].fuel_acceleration_multiplier = data.raw[item_type][item_name].fuel_acceleration_multiplier
 				data.raw.item[stacked_item_name].fuel_top_speed_multiplier = data.raw[item_type][item_name].fuel_top_speed_multiplier
 				data.raw.item[stacked_item_name].fuel_emissions_multiplier = data.raw[item_type][item_name].fuel_emissions_multiplier
-				-- great, the fuel value is a string, with SI units. how very easy to work with
-				-- now works with fuel values that have a decimal place
 				data.raw.item[stacked_item_name].fuel_value = multiply_number_unit(data.raw[item_type][item_name].fuel_value, stack_size)
 			end
 		else
@@ -116,8 +109,6 @@ function DBL.deferred_stacked_item_updates()
 	end
 end
 
--- make stacking/unstacking recipes for a base item
--- Deadlock 8.6.19: no need to pass icon parameters, can be extracted from item
 function DBL.create_stacking_recipes(item_name, item_type, stack_size)
 	DBL.debug(string.format("Creating recipes: %s", item_name))
 	local base_item = data.raw.item[string.format("deadlock-stack-%s", item_name)]
@@ -126,7 +117,6 @@ function DBL.create_stacking_recipes(item_name, item_type, stack_size)
 		base_icons = { { icon = base_item.icon, icon_size = base_item.icon_size, icon_mipmaps = base_item.icon_mipmaps } }
 	end
 	local stack_speed_modifier = stack_size / DBL.STACK_SIZE
-	-- stacking
 	local stack_icons = table.deepcopy(base_icons)
 	table.insert(stack_icons,
 		{
@@ -140,7 +130,7 @@ function DBL.create_stacking_recipes(item_name, item_type, stack_size)
 			type = "recipe",
 			name = string.format("deadlock-stacks-stack-%s", item_name),
 			localised_name = {"recipe-name.deadlock-stacking-stack", get_localised_name(item_name)},
-			category = "stacking",
+			categories = {"stacking"},
 			group = "intermediate-products",
 			subgroup = data.raw.item[string.format("deadlock-stack-%s", item_name)].subgroup,
 			order = DBL.recipe_order[item_name].."[a]",
@@ -155,7 +145,6 @@ function DBL.create_stacking_recipes(item_name, item_type, stack_size)
 			hide_from_stats = true,
 		}
 	})
-	-- unstacking
 	local unstack_icons = table.deepcopy(base_icons)
 	table.insert(unstack_icons,
 		{
@@ -169,7 +158,7 @@ function DBL.create_stacking_recipes(item_name, item_type, stack_size)
 			type = "recipe",
 			name = string.format("deadlock-stacks-unstack-%s", item_name),
 			localised_name = {"recipe-name.deadlock-stacking-unstack", get_localised_name(item_name)},
-			category = "unstacking",
+			categories = {"unstacking"},
 			group = "intermediate-products",
 			subgroup = data.raw.item[string.format("deadlock-stack-%s", item_name)].subgroup,
 			order = DBL.recipe_order[item_name].."[b]",
@@ -187,16 +176,13 @@ function DBL.create_stacking_recipes(item_name, item_type, stack_size)
 	DBL.debug(string.format("Created recipes: %s", item_name))
 end
 
--- make the stacking recipes depend on a technology
 function DBL.add_stacks_to_tech(item_name, target_technology)
-	-- gather what recipes this tech currently unlocks to avoid adding duplicates
 	local recipes = {}
 	for _, effect in pairs(data.raw.technology[target_technology].effects) do
 		if effect.type == "unlock-recipe" then
 			recipes[effect.recipe] = true
 		end
 	end
-	-- insert stacking recipe
 	if recipes[string.format("deadlock-stacks-stack-%s", item_name)] then
 		DBL.log_warning(string.format("Skipping already added tech effect for stacking %s", item_name))
 	else
@@ -207,8 +193,7 @@ function DBL.add_stacks_to_tech(item_name, target_technology)
 			}
 		)
 	end
-	-- insert unstacking recipe
-	if recipes[string.format("deadlock-stacks-stack-%s", item_name)] then
+	if recipes[string.format("deadlock-stacks-unstack-%s", item_name)] then
 		DBL.log_warning(string.format("Skipping already added tech effect for unstacking %s", item_name))
 	else
 		table.insert(data.raw.technology[target_technology].effects,

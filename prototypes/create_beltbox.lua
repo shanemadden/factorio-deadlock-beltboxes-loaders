@@ -86,7 +86,6 @@ local function create_beltbox_entity(tier_table)
 		module_specification = { module_slots = 0, module_info_icon_shift = {0,0.25} },
 		allowed_effects = { "consumption" },
 		max_health = 180,
-		corpse = "small-remnants",
 		collision_box = {{-0.2, -0.2}, {0.2, 0.2}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		drawing_box = {{-0.5, -0.5}, {0.5, 0.5}},
@@ -100,7 +99,6 @@ local function create_beltbox_entity(tier_table)
 			usage_priority = "secondary-input",
 			drain = "15kW",
 		},
-		-- 90kW for tier 1, base the rest on relative speed
 		energy_usage = string.format("%dkW", math.floor((data.raw["transport-belt"][tier_table.transport_belt].speed / 0.03125) * 90)),
 		resistances = {
 			{
@@ -157,7 +155,7 @@ local function create_beltbox_recipe(tier_table)
 		type = "recipe",
 		name = tier_table.beltbox_recipe or tier_table.beltbox,
 		localised_description = {"entity-description.deadlock-beltbox"},
-		category = tier_table.beltbox_category,
+		categories = { tier_table.beltbox_category },
 		group = "logistics",
 		subgroup = "beltboxes",
 		order = string.format("b%s%s", (tier_table.order or tier_table.loader), "-deadlock-beltbox"),
@@ -181,8 +179,8 @@ local function create_beltbox_technology(tier_table)
 		}
 	}
 	tech.icons = {
-		{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/square/beltbox-icon-base-128.png", icon_size = 128 },  -- 1.1 appears to be defaulting to 256
-		{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/square/beltbox-icon-mask-128.png", icon_size = 128, tint = tier_table.colour },  -- 1.1 appears to be defaulting to 256
+		{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/square/beltbox-icon-base-128.png", icon_size = 128 },
+		{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/square/beltbox-icon-mask-128.png", icon_size = 128, tint = tier_table.colour },
 	}
 	tech.name = tier_table.beltbox_technology
 	tech.unit.count = tech.unit.count * 1.5
