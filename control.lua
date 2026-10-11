@@ -28,8 +28,7 @@ end
 local function are_loadable(entities)
 	for _,entity in pairs(entities) do
 		if entity.get_inventory(defines.inventory.chest) or
-			entity.get_inventory(defines.inventory.furnace_source) or
-			entity.get_inventory(defines.inventory.assembling_machine_input) or
+			entity.get_inventory(defines.inventory.crafter_input) or -- 2.1: replaces furnace_source / assembling_machine_input
 			entity.get_inventory(defines.inventory.lab_input) or
 			entity.get_inventory(defines.inventory.rocket_silo_rocket)
 		then return true end
@@ -145,11 +144,9 @@ end
 
 local inventories_to_check = {
 	defines.inventory.chest, 
-	defines.inventory.furnace_source, 
-	defines.inventory.furnace_result,
+	defines.inventory.crafter_input, -- 2.1: replaces furnace_source / assembling_machine_input
+	defines.inventory.crafter_output, -- 2.1: replaces furnace_result / assembling_machine_output
 	defines.inventory.cargo_wagon,
-	defines.inventory.assembling_machine_input,
-	defines.inventory.assembling_machine_output,
 	defines.inventory.robot_cargo,
 }
 local function try_unstacking(entity, inventory_type, player_inventory)

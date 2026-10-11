@@ -84,16 +84,24 @@ function deadlock.add_tier(tier_table)
 	DBL.debug(string.format("Data validation completed for tier for %s", tier_table.transport_belt))
 
 	-- defaults
+	-- 2.1: recipes have categories (array, default {"crafting"}) instead of category;
+	-- *_category may be passed as a string or an array, it is normalised to an array here
+	local function underground_categories()
+		local recipe = data.raw.recipe[tier_table.underground_belt or ""]
+		if recipe and recipe.categories then return table.deepcopy(recipe.categories) end
+		return {"crafting"}
+	end
+	local function as_categories(c)
+		if type(c) == "string" then return {c} end
+		return c
+	end
 	if not tier_table.loader_ingredients then
 		tier_table.loader_ingredients = data.raw.recipe[tier_table.underground_belt].ingredients
 	end
 	if not tier_table.loader_category then
-		if data.raw.recipe[tier_table.underground_belt] then
-			tier_table.loader_category = data.raw.recipe[tier_table.underground_belt].category
-		else
-			tier_table.loader_category = "crafting"
-		end
+		tier_table.loader_category = underground_categories()
 	end
+	tier_table.loader_category = as_categories(tier_table.loader_category)
 	if not tier_table.loader then
 		tier_table.loader = string.format("%s-loader", tier_table.transport_belt)
 	end
@@ -102,12 +110,9 @@ function deadlock.add_tier(tier_table)
 		tier_table.beltbox_ingredients = data.raw.recipe[tier_table.underground_belt].ingredients
 	end
 	if not tier_table.beltbox_category then
-		if data.raw.recipe[tier_table.underground_belt] then
-			tier_table.beltbox_category = data.raw.recipe[tier_table.underground_belt].category
-		else
-			tier_table.beltbox_category = "crafting"
-		end
+		tier_table.beltbox_category = underground_categories()
 	end
+	tier_table.beltbox_category = as_categories(tier_table.beltbox_category)
 	if not tier_table.beltbox then
 		tier_table.beltbox = string.format("%s-beltbox", tier_table.transport_belt)
 	end
@@ -177,7 +182,7 @@ function deadlock.add_stack(item_name, graphic_path, target_tech, icon_size, ite
 		DBL.log_error(string.format("Item type not allowed for %s", item_name))
 		return
 	end
-	if not data.raw[item_type][item_name] then
+	if not (data.raw[item_type] and data.raw[item_type][item_name]) then -- 2.1: data.raw.tool may be absent (science packs are items)
 		DBL.log_error(string.format("Can't create stacks for item that doesn't exist %s", item_name))
 		return
 	end

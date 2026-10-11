@@ -92,7 +92,7 @@ function DBL.deferred_stacked_item_updates()
 	for stacked_item_name, item_table in pairs(items_to_update) do
 		local item_name = item_table.item_name
 		local item_type = item_table.item_type
-		if data.raw[item_type][item_name] then
+		if data.raw[item_type] and data.raw[item_type][item_name] then -- 2.1: data.raw.tool may be absent
 			local stack_size = deadlock.get_item_stack_density(item_name, item_type)
 			data.raw.item[stacked_item_name].subgroup = string.format("stacks-%s", get_group(item_name, item_type))
 			data.raw.item[stacked_item_name].stack_size = math.floor(data.raw[item_type][item_name].stack_size/stack_size)
@@ -102,7 +102,9 @@ function DBL.deferred_stacked_item_updates()
 				DBL.log_warning(string.format("Full stack density for %s is reduced to %d from source stack size %d, doesn't divide cleanly by %d", stacked_item_name, (data.raw.item[stacked_item_name].stack_size * stack_size), data.raw[item_type][item_name].stack_size, stack_size))
 			end
 			if data.raw[item_type][item_name].fuel_value then
-				data.raw.item[stacked_item_name].fuel_category = data.raw[item_type][item_name].fuel_category
+				-- 2.1: fuel_category was replaced by fuel_categories (array)
+				local src = data.raw[item_type][item_name]
+				data.raw.item[stacked_item_name].fuel_categories = table.deepcopy(src.fuel_categories) or (src.fuel_category and {src.fuel_category}) or nil
 				data.raw.item[stacked_item_name].fuel_acceleration_multiplier = data.raw[item_type][item_name].fuel_acceleration_multiplier
 				data.raw.item[stacked_item_name].fuel_top_speed_multiplier = data.raw[item_type][item_name].fuel_top_speed_multiplier
 				data.raw.item[stacked_item_name].fuel_emissions_multiplier = data.raw[item_type][item_name].fuel_emissions_multiplier
@@ -140,7 +142,7 @@ function DBL.create_stacking_recipes(item_name, item_type, stack_size)
 			type = "recipe",
 			name = string.format("deadlock-stacks-stack-%s", item_name),
 			localised_name = {"recipe-name.deadlock-stacking-stack", get_localised_name(item_name)},
-			category = "stacking",
+			categories = {"stacking"}, -- 2.1: was category
 			group = "intermediate-products",
 			subgroup = data.raw.item[string.format("deadlock-stack-%s", item_name)].subgroup,
 			order = DBL.recipe_order[item_name].."[a]",
@@ -169,7 +171,7 @@ function DBL.create_stacking_recipes(item_name, item_type, stack_size)
 			type = "recipe",
 			name = string.format("deadlock-stacks-unstack-%s", item_name),
 			localised_name = {"recipe-name.deadlock-stacking-unstack", get_localised_name(item_name)},
-			category = "unstacking",
+			categories = {"unstacking"}, -- 2.1: was category
 			group = "intermediate-products",
 			subgroup = data.raw.item[string.format("deadlock-stack-%s", item_name)].subgroup,
 			order = DBL.recipe_order[item_name].."[b]",
