@@ -164,7 +164,7 @@ local function create_loader_recipe(tier_table)
 		type = "recipe",
 		name = tier_table.loader_recipe or tier_table.loader,
 		localised_description = {"entity-description.deadlock-loader"},
-		category = tier_table.loader_category,
+		categories = tier_table.loader_category, -- 2.1: array, normalised in deadlock.add_tier
 		group = "logistics",
 		subgroup = "loaders",
 		order = string.format("a%s%s", (tier_table.order or tier_table.loader), "-deadlock-loader"),

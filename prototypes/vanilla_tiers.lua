@@ -56,11 +56,13 @@ if data.raw.furnace["fast-transport-belt-beltbox"] then
 end
 
 -- vary which category t3 is used for depending on whether space age is present
+-- 2.1: the combined "crafting-with-fluid-or-metallurgy" category was removed, recipes list several categories instead
+-- (vanilla express-underground-belt is {"crafting-with-fluid", "metallurgy"} with space age)
 local t3_category
 if mods["space-age"] then
-	t3_category = "crafting-with-fluid-or-metallurgy"
+	t3_category = {"crafting-with-fluid", "metallurgy"}
 else
-	t3_category = "crafting-with-fluid"
+	t3_category = {"crafting-with-fluid"}
 end
 
 -- tier 3
@@ -112,14 +114,14 @@ if mods["space-age"] then
 			{name = "tungsten-plate", type = "item", amount = 20},
 			{name = "lubricant", type = "fluid", amount = 20},
 		},
-		loader_category     = "crafting-with-fluid-or-metallurgy",
+		loader_category     = {"crafting-with-fluid", "metallurgy"}, -- 2.1: was "crafting-with-fluid-or-metallurgy"
 		beltbox_ingredients = {
 			{name = "express-transport-belt-beltbox", type = "item", amount = 1},
 			{name = "tungsten-plate", type = "item", amount = 15},
 			{name = "iron-gear-wheel", type = "item", amount = 15},
 			{name = "lubricant", type = "fluid", amount = 100},
 		},
-		beltbox_category    = "crafting-with-fluid-or-metallurgy",
+		beltbox_category    = {"crafting-with-fluid", "metallurgy"}, -- 2.1: was "crafting-with-fluid-or-metallurgy"
 		beltbox_technology  = "deadlock-stacking-4",
 	})
 	if data.raw.technology["deadlock-stacking-4"] then

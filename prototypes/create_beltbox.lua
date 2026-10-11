@@ -157,7 +157,7 @@ local function create_beltbox_recipe(tier_table)
 		type = "recipe",
 		name = tier_table.beltbox_recipe or tier_table.beltbox,
 		localised_description = {"entity-description.deadlock-beltbox"},
-		category = tier_table.beltbox_category,
+		categories = tier_table.beltbox_category, -- 2.1: array, normalised in deadlock.add_tier
 		group = "logistics",
 		subgroup = "beltboxes",
 		order = string.format("b%s%s", (tier_table.order or tier_table.loader), "-deadlock-beltbox"),
